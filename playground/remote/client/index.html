@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Starter Snowpack App" />
+        <title>Starter Snowpack App</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            #imgcanvas {
+                image-rendering: pixelated;
+                position: fixed;
+                margin: 0;
+                padding: 0;
+                width: 100vw;
+                height: auto;
+                top: -25%;
+            }
+
+            #title {
+                position: absolute;
+                top: 1.5rem;
+                left: 2rem;
+                color: rgb(34, 28, 6);
+                z-index: 2;
+                text-transform: uppercase;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background-color: white;
+                padding: 0.3rem 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="title">Cellular Automata Remote Rendering</h1>
+        <img id="imgcanvas" width="512" height="512" />
+        <script type="module" src="/index.js"></script>
+    </body>
+</html>
