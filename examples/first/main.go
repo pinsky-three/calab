@@ -12,8 +12,10 @@ import (
 func main() {
 	// creating the space.
 	width, height := 512, 512
+
 	nh := board.MooreNeighborhood(1, false)
-	space := board.MustNew(width, height, nh, board.ToroidBounded)
+	bound := board.ToroidBounded()
+	space := board.MustNew(width, height, nh, bound, board.RandomInit, board.UniformNoise)
 
 	// creating the rule.
 	rule := lifelike.MustNew(lifelike.GameOfLifeRule)
@@ -21,11 +23,20 @@ func main() {
 	// bulk into dynamical system.
 	system := calab.BulkDynamicalSystem(space, rule)
 
-	// ticks := make(chan uint64)
+	ticks := make(chan uint64)
 
-	// system.RunSimulation(100, ticks)
+	go func() {
+		lastTime := time.Now()
+		system.Observe(ticks, func(n uint64, s calab.Space) {
+			fmt.Println(time.Since(lastTime))
+			lastTime = time.Now()
+		})
+
+	}()
 
 	fmt.Println(system.ID)
+
+	system.RunSimulation(100, ticks)
 
 	time.Sleep(10 * time.Second)
 }

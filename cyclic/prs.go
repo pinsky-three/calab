@@ -77,7 +77,7 @@ func (prs *PaperRockSissor) counts(i, j int64) {
 }
 
 // Evolve ...
-func (prs *PaperRockSissor) Evolve(space calab.Space) calab.Space {
+func (prs *PaperRockSissor) Evolve(space calab.Space) {
 	newBoard := make([][]byte, len(prs.board))
 	for i := range newBoard {
 		newBoard[i] = make([]byte, len(prs.board[0]))
@@ -108,7 +108,6 @@ func (prs *PaperRockSissor) Evolve(space calab.Space) calab.Space {
 
 	prs.board = newBoard
 
-	return prs
 }
 
 // Render ...

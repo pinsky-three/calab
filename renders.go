@@ -1,7 +1,7 @@
 package calab
 
-// RenderFunction ...
-type RenderFunction func(n uint64, s Space)
+// ObserverFunction ...
+type ObserverFunction func(n uint64, s Space)
 
 // Renderer represents a new image renderer.
 type Renderer interface {

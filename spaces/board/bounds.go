@@ -1,25 +1,27 @@
 package board
 
-// Bounder represents a new bounder mapper
-type Bounder func(w, h, x, y int64) (int64, int64)
+// Bounder2D represents a new bounder mapper
+type Bounder2D func(w, h, xi, yi int64) (int64, int64)
 
 // ToroidBounded is a toroind kind bounder
-func ToroidBounded(w, h, x, y int64) (int64, int64) {
-	if x > int64(w-1) {
-		x = 0
-	}
+func ToroidBounded() Bounder2D {
+	return func(w, h, xi, yi int64) (int64, int64) {
+		if xi > int64(w-1) {
+			xi = 0
+		}
 
-	if x < 0 {
-		x = int64(w - 1)
-	}
+		if xi < 0 {
+			xi = int64(w - 1)
+		}
 
-	if y > int64(h-1) {
-		y = 0
-	}
+		if yi > int64(h-1) {
+			yi = 0
+		}
 
-	if y < 0 {
-		y = int64(h - 1)
-	}
+		if yi < 0 {
+			yi = int64(h - 1)
+		}
 
-	return x, y
+		return xi, yi
+	}
 }

@@ -22,7 +22,7 @@ func (life *LifeLike) Evolve(space calab.Space) {
 	board := space.(*board.Board2D)
 	dims := board.Dims()
 
-	newBoard := [][]byte{}
+	newBoard := [][]uint64{}
 	for _, b := range board.Board {
 		newBoard = append(newBoard, b)
 	}
@@ -38,7 +38,7 @@ func (life *LifeLike) Evolve(space calab.Space) {
 	board.Board = newBoard
 }
 
-func (life *LifeLike) calculateNextState(i, j int64, neighborsSum int, board *[][]byte) {
+func (life *LifeLike) calculateNextState(i, j int64, neighborsSum int, board *[][]uint64) {
 	for _, b := range life.rule.B {
 		if b == neighborsSum {
 			(*board)[i][j] = 1
