@@ -20,7 +20,7 @@ type LifeLike struct {
 // Evolve implements a evolvable system for calab framework.
 func (life *LifeLike) Evolve(space calab.Space) {
 	board := space.(*board.Board2D)
-	dims := board.Dims()
+	dims := space.Dims()
 
 	newBoard := [][]uint64{}
 	for _, b := range board.Board {

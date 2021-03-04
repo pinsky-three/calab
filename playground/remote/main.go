@@ -17,7 +17,6 @@ func main() {
 	width, height := 600, 600
 
 	// model := gol.NewGoLDynamicalSystem(width, height, time.Now().Unix())
-
 	// renderer := gol.NewImageRenderer(images, width, height)
 
 	model, err := cyclic.NewRockPaperScissor(width, height, 2, 8, 0, time.Now().Unix(), images)
