@@ -1,6 +1,10 @@
 package calab
 
-import uuid "github.com/satori/go.uuid"
+import (
+	"time"
+
+	uuid "github.com/satori/go.uuid"
+)
 
 // Space have the task to describe the lattice space of a any dynamical system.
 type Space interface {
@@ -16,22 +20,26 @@ type Evolvable interface {
 
 // DynamicalSystem represents a generalized dynamical system.
 type DynamicalSystem struct {
-	ID    string
+	ID             string
+	TicksPerSecond int
+
 	state Space
 	rule  Evolvable
 
-	ticks   uint64
-	running bool
+	ticks    uint64
+	running  bool
+	lastTime time.Time
 }
 
 // BulkDynamicalSystem bulks a new DS.
-func BulkDynamicalSystem(s Space, r Evolvable) *DynamicalSystem {
+func BulkDynamicalSystem(s Space, r Evolvable, tps int) *DynamicalSystem {
 	return &DynamicalSystem{
-		ID:      uuid.NewV4().String(),
-		state:   s,
-		rule:    r,
-		ticks:   0,
-		running: false,
+		ID:             uuid.NewV4().String(),
+		state:          s,
+		rule:           r,
+		ticks:          0,
+		running:        false,
+		TicksPerSecond: tps,
 	}
 }
 

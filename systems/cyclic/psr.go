@@ -22,7 +22,6 @@ func (prs *RockPaperScissor) counts(i, j int64, neighbors []uint64) {
 	for _, n := range neighbors {
 		prs.countsMap[n]++
 	}
-
 }
 
 // Evolve perform the classic rule of the Rock Paper Scissor CA.

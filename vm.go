@@ -1,18 +1,24 @@
 package calab
 
-import "time"
+import (
+	"time"
+)
 
 // VirtualMachine ...
 type VirtualMachine struct {
-	model     *DynamicalSystem
-	renderers []Renderer
+	simulationDuration time.Duration
+	model              *DynamicalSystem
+	renderers          []Renderer
+	RendersPerSecond   int
 }
 
 // NewVM ...
-func NewVM(model *DynamicalSystem, renderers ...Renderer) *VirtualMachine {
+func NewVM(model *DynamicalSystem, rps int, renderers ...Renderer) *VirtualMachine {
 	return &VirtualMachine{
-		model:     model,
-		renderers: renderers,
+		simulationDuration: time.Duration(0),
+		RendersPerSecond:   rps,
+		model:              model,
+		renderers:          renderers,
 	}
 }
 
@@ -20,6 +26,7 @@ func NewVM(model *DynamicalSystem, renderers ...Renderer) *VirtualMachine {
 func (vm *VirtualMachine) Run(dt time.Duration) {
 	ticks := make(chan uint64)
 	done := make(chan struct{})
+	lastTime := time.Now()
 
 	vm.model.RunInfiniteSimulation(ticks, done)
 
@@ -28,10 +35,18 @@ func (vm *VirtualMachine) Run(dt time.Duration) {
 		done <- struct{}{}
 	}(done)
 
-	vm.model.Observe(ticks, func(n uint64, s Space) {
+	go vm.model.Observe(ticks, func(n uint64, s Space) {
+		// Limiting the renders per second.
+		if time.Since(lastTime) < 1000/time.Duration(vm.RendersPerSecond)*time.Millisecond {
+			return
+		}
+
+		// TODO: Update this rps limiter with an array of its, that's necessary for many renderers.
 		for _, renderer := range vm.renderers {
 			renderer(n, s)
 		}
+
+		lastTime = time.Now()
 	})
 
 }

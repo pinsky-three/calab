@@ -1,8 +1,16 @@
 package calab
 
+import "time"
+
 // Tick execute one tick dynamical system evolution.
 func (ds *DynamicalSystem) Tick() {
+	if time.Since(ds.lastTime) < 1000/time.Duration(ds.TicksPerSecond)*time.Millisecond {
+		return
+	}
+
 	ds.rule.Evolve(ds.state)
+
+	ds.lastTime = time.Now()
 	ds.ticks++
 }
 
