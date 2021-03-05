@@ -24,7 +24,7 @@ func (life *LifeLike) Evolve(space calab.Space) {
 
 	newBoard := [][]uint64{}
 	for _, b := range board.Board {
-		newBoard = append(newBoard, b)
+		newBoard = append(newBoard, append([]uint64{}, b...))
 	}
 
 	for i := int64(0); i < int64(dims[0]); i++ {

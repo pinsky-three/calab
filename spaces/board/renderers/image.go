@@ -38,3 +38,13 @@ func NewBoardImage(w, h int, palette Palette) (*BoardImageRenderer, error) {
 		colorPalette: palette,
 	}, nil
 }
+
+// MustNewBoard returns a new board and panic if it fails.
+func MustNewBoard(w, h int, palette Palette) *BoardImageRenderer {
+	board, err := NewBoardImage(w, h, palette)
+	if err != nil {
+		panic(err)
+	}
+
+	return board
+}

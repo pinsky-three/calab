@@ -30,7 +30,7 @@ func (vm *VirtualMachine) Run(dt time.Duration) {
 
 	vm.model.Observe(ticks, func(n uint64, s Space) {
 		for _, renderer := range vm.renderers {
-			renderer.Render(n, s)
+			renderer(n, s)
 		}
 	})
 
