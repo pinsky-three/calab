@@ -17,22 +17,19 @@ func main() {
 	// creating the space.
 	width, height := 256, 256
 
-	nh := board.MooreNeighborhood(2, false)
+	nh := board.MooreNeighborhood(1, false)
 	bound := board.ToroidBounded()
 	space := board.MustNew(width, height, nh, bound, board.RandomInit, board.UniformNoise)
 
 	// creating the rule.
-	rule := lifelike.MustNew(&lifelike.Rule{
-		S: []int{3},
-		B: []int{5, 8},
-	})
+	rule := lifelike.MustNew(lifelike.DayAndNight)
 
 	// bulk into dynamical system.
 	system := calab.BulkDynamicalSystem(space, rule)
 
 	// defining rendering
 	c0, _ := colorful.Hex("#000000")
-	c1, _ := colorful.Hex("#FFDF53")
+	c1, _ := colorful.Hex("#a68f2c")
 
 	p := renderers.NewPalette(c0, c1, 2)
 	imgRenderer := renderers.MustNewBoard(width, height, p)
