@@ -1,4 +1,4 @@
-package renderers
+package calab
 
 import (
 	"image/color"

@@ -4,11 +4,11 @@ import "time"
 
 // Tick execute one tick dynamical system evolution.
 func (ds *DynamicalSystem) Tick() {
-	if time.Since(ds.lastTime) < 1000/time.Duration(ds.TicksPerSecond)*time.Millisecond {
+	if time.Since(ds.lastTime) < 1000/time.Duration(ds.ticksPerSecond)*time.Millisecond {
 		return
 	}
 
-	ds.rule.Evolve(ds.state)
+	ds.rule.Evolve(ds.Space)
 
 	ds.lastTime = time.Now()
 	ds.ticks++
@@ -59,6 +59,6 @@ func (ds *DynamicalSystem) RunInfiniteSimulation(cn chan uint64, finish chan str
 // Observe execute a function on every tick from ticker channel.
 func (ds *DynamicalSystem) Observe(cn chan uint64, observer ObserverFunction) {
 	for n := range cn {
-		observer(n, ds.state)
+		observer(n, ds.Space)
 	}
 }

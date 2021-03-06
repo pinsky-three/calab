@@ -11,7 +11,7 @@ type BoardImageRenderer struct {
 	// Background color.Color
 
 	image        *image.RGBA
-	colorPalette Palette
+	colorPalette calab.Palette
 }
 
 // Render ...
@@ -32,7 +32,7 @@ func (bir *BoardImageRenderer) Render(n uint64, s calab.Space) image.Image {
 }
 
 // NewBoardImage ...
-func NewBoardImage(w, h int, palette Palette) (*BoardImageRenderer, error) {
+func NewBoardImage(w, h int, palette calab.Palette) (*BoardImageRenderer, error) {
 	return &BoardImageRenderer{
 		image:        image.NewRGBA(image.Rect(0, 0, w, h)),
 		colorPalette: palette,
@@ -40,7 +40,7 @@ func NewBoardImage(w, h int, palette Palette) (*BoardImageRenderer, error) {
 }
 
 // MustNewBoard returns a new board and panic if it fails.
-func MustNewBoard(w, h int, palette Palette) *BoardImageRenderer {
+func MustNewBoard(w, h int, palette calab.Palette) *BoardImageRenderer {
 	board, err := NewBoardImage(w, h, palette)
 	if err != nil {
 		panic(err)

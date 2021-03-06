@@ -6,20 +6,28 @@ import (
 
 // VirtualMachine ...
 type VirtualMachine struct {
-	simulationDuration time.Duration
-	model              *DynamicalSystem
-	renderers          []Renderer
-	RendersPerSecond   int
+	Model            *DynamicalSystem
+	rendersPerSecond int
+	renderers        []Renderer
 }
 
 // NewVM ...
-func NewVM(model *DynamicalSystem, rps int, renderers ...Renderer) *VirtualMachine {
+func NewVM(model *DynamicalSystem, renderers ...Renderer) *VirtualMachine {
 	return &VirtualMachine{
-		simulationDuration: time.Duration(0),
-		RendersPerSecond:   rps,
-		model:              model,
-		renderers:          renderers,
+		rendersPerSecond: 60,
+		Model:            model,
+		renderers:        renderers,
 	}
+}
+
+// AddRenderer ...
+func (vm *VirtualMachine) AddRenderer(r Renderer) {
+	vm.renderers = append(vm.renderers, r)
+}
+
+// SetRPS sets renders per second rate.
+func (vm *VirtualMachine) SetRPS(rendersPerSecond int) {
+	vm.rendersPerSecond = rendersPerSecond
 }
 
 // Run ...
@@ -28,16 +36,16 @@ func (vm *VirtualMachine) Run(dt time.Duration) {
 	done := make(chan struct{})
 	lastTime := time.Now()
 
-	vm.model.RunInfiniteSimulation(ticks, done)
+	vm.Model.RunInfiniteSimulation(ticks, done)
 
 	go func(done chan struct{}) {
 		time.Sleep(dt)
 		done <- struct{}{}
 	}(done)
 
-	go vm.model.Observe(ticks, func(n uint64, s Space) {
+	go vm.Model.Observe(ticks, func(n uint64, s Space) {
 		// Limiting the renders per second.
-		if time.Since(lastTime) < 1000/time.Duration(vm.RendersPerSecond)*time.Millisecond {
+		if time.Since(lastTime) < 1000/time.Duration(vm.rendersPerSecond)*time.Millisecond {
 			return
 		}
 

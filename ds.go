@@ -21,9 +21,9 @@ type Evolvable interface {
 // DynamicalSystem represents a generalized dynamical system.
 type DynamicalSystem struct {
 	ID             string
-	TicksPerSecond int
+	ticksPerSecond int
 
-	state Space
+	Space Space
 	rule  Evolvable
 
 	ticks    uint64
@@ -35,19 +35,15 @@ type DynamicalSystem struct {
 func BulkDynamicalSystem(s Space, r Evolvable, tps int) *DynamicalSystem {
 	return &DynamicalSystem{
 		ID:             uuid.NewV4().String(),
-		state:          s,
+		Space:          s,
 		rule:           r,
 		ticks:          0,
 		running:        false,
-		TicksPerSecond: tps,
+		ticksPerSecond: tps,
 	}
 }
 
-// State returns the state property of the DS structure.
-func (ds *DynamicalSystem) State() Space {
-	return ds.state
+// SetTPS set ticks per second for your dynamical model.
+func (ds *DynamicalSystem) SetTPS(ticksPerSecond int) {
+	ds.ticksPerSecond = ticksPerSecond
 }
-
-// type ComplexSystem interface {
-// 	Run(*DynamicalSystem)
-// }

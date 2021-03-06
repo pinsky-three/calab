@@ -15,58 +15,63 @@ import (
 	"github.com/minskylab/calab/systems/cyclic"
 )
 
-const width, height = 168, 56
-const states = 4
-
-var c0, _ = colorful.Hex("#1e2031")
-var c1, _ = colorful.Hex("#faad65")
-
-// var p = renderers.NewPalette(c0, c1, states)
-var p = renderers.Palette{
-	0: c1,
-	1: c0,
-	2: c1,
-	3: c0,
+// PetriDish is a petri dish.
+type PetriDish struct {
+	Width, Height int
+	palette       calab.Palette
+	imgRenderer   *renderers.BoardImageRenderer
+	buffer        *bytes.Buffer
+	binaryChannel chan []byte
 }
 
-var imgRenderer = renderers.MustNewBoard(width, height, p)
-
-var buff = bytes.NewBuffer([]byte{})
-
-var dataBinary = make(chan []byte)
-
 func main() {
-	// creating the space.
+	var c0, _ = colorful.Hex("#1e2031")
+	var c1, _ = colorful.Hex("#fbe3a1")
 
+	width, height := 168, 56
+
+	palette := calab.Palette{0: c1, 1: c0, 2: c1, 3: c0}
+
+	pd := PetriDish{
+		Width:  width,
+		Height: height,
+
+		palette:       palette,
+		imgRenderer:   renderers.MustNewBoard(width, height, palette),
+		buffer:        bytes.NewBuffer([]byte{}),
+		binaryChannel: make(chan []byte),
+	}
+
+	// creating the space.
 	nh := board.MooreNeighborhood(1, false)
 	bound := board.ToroidBounded()
-	space := board.MustNew(width, height, nh, bound, board.RandomInit, board.UniformNoise(states))
+	space := board.MustNew(width, height, nh, bound, board.RandomInit, board.UniformNoise(len(palette)))
 
 	// creating the rule.
 	// rule := lifelike.MustNew(lifelike.DayAndNight)
-	rule := cyclic.MustNewRockPaperScissor(states, 1, 4)
+	rule := cyclic.MustNewRockPaperScissor(len(palette), 1, 4)
 
 	// bulk into dynamical system.
 	system := calab.BulkDynamicalSystem(space, rule, 60)
 
-	srv := remote.NewBinaryRemote(3000, "/", dataBinary)
+	srv := remote.NewBinaryRemote(3000, "/", pd.binaryChannel)
 
-	vm := calab.NewVM(system, 60, renderImage)
+	vm := calab.NewVM(system, 60, pd.renderImage)
 
 	go vm.Run(1000 * time.Second)
 
 	srv.Run()
 }
 
-func renderImage(n uint64, s calab.Space) {
-	img := imgRenderer.Render(n, s)
+func (pd *PetriDish) renderImage(n uint64, s calab.Space) {
+	img := pd.imgRenderer.Render(n, s)
 
-	buff.Reset()
-	if err := jpeg.Encode(buff, img, &jpeg.Options{
+	pd.buffer.Reset()
+	if err := jpeg.Encode(pd.buffer, img, &jpeg.Options{
 		Quality: 100,
 	}); err != nil {
 		panic(err)
 	}
 
-	dataBinary <- buff.Bytes()
+	pd.binaryChannel <- pd.buffer.Bytes()
 }
