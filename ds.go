@@ -32,14 +32,14 @@ type DynamicalSystem struct {
 }
 
 // BulkDynamicalSystem bulks a new DS.
-func BulkDynamicalSystem(s Space, r Evolvable, tps int) *DynamicalSystem {
+func BulkDynamicalSystem(s Space, r Evolvable) *DynamicalSystem {
 	return &DynamicalSystem{
 		ID:             uuid.NewV4().String(),
 		Space:          s,
 		rule:           r,
 		ticks:          0,
 		running:        false,
-		ticksPerSecond: tps,
+		ticksPerSecond: 60,
 	}
 }
 

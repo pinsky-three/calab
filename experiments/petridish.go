@@ -11,16 +11,18 @@ import (
 
 // PetriDish represents a fully instrumented system.
 type PetriDish struct {
-	vm           *calab.VirtualMachine
+	VM           *calab.VirtualMachine
 	buffer       *bytes.Buffer
 	img          *image.RGBA
 	colorPalette calab.Palette
 	dataHole     chan []byte
+	ticks        uint64
+	storage      ExperimentsStorage
 }
 
 // Snapshot perform a instant snapshot of your dynamical system.
-func (pd *PetriDish) Snapshot() image.Image {
-	space := pd.vm.Model.Space
+func (pd *PetriDish) snapshot() {
+	space := pd.VM.Model.Space
 	dims := space.Dims()
 
 	w, h := dims[0], dims[1]
@@ -30,22 +32,26 @@ func (pd *PetriDish) Snapshot() image.Image {
 			pd.img.Set(int(i), int(j), pd.colorPalette[space.State(i, j)])
 		}
 	}
-
-	return pd.img
 }
 
 func (pd *PetriDish) renderPNG(n uint64, s calab.Space) {
-	pd.Snapshot()
+	pd.snapshot()
 
 	pd.buffer.Reset()
 	if err := png.Encode(pd.buffer, pd.img); err != nil {
 		panic(err)
 	}
 
+	pd.ticks = n
 	// pd.dataHole <- pd.buffer.Bytes()
 }
 
 // Run ...
 func (pd *PetriDish) Run(duration time.Duration) {
-	go pd.vm.Run(duration)
+	pd.VM.Run(duration)
+}
+
+// Ticks returns the current ticks in the model of your petri dish.
+func (pd *PetriDish) Ticks() uint64 {
+	return pd.ticks
 }

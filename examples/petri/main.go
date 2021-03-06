@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image/png"
 	"os"
 	"time"
@@ -13,10 +14,11 @@ import (
 )
 
 func main() {
+
 	var c0, _ = colorful.Hex("#1e2031")
 	var c1, _ = colorful.Hex("#fbe3a1")
 
-	width, height := 168, 56
+	width, height := 256, 256
 
 	palette := calab.Palette{0: c1, 1: c0, 2: c1, 3: c0}
 
@@ -30,24 +32,27 @@ func main() {
 	rule := cyclic.MustNewRockPaperScissor(len(palette), 1, 4)
 
 	// bulk into dynamical system.
-	system := calab.BulkDynamicalSystem(space, rule, 10000)
+	system := calab.BulkDynamicalSystem(space, rule)
 
 	// srv := remote.NewBinaryRemote(3000, "/", pd.binaryChannel)
 
 	vm := calab.NewVM(system)
 
-	pd := experiments.NewPetriDish(vm, palette, 60)
+	pd := experiments.NewPetriDish(vm, palette, 10000)
 
-	pd.Run(100 * time.Second)
+	startTime := time.Now()
 
-	time.Sleep(10 * time.Second)
+	pd.Run(10 * time.Second)
+
+	fmt.Printf("experiment duration: %s | total ticks: %d", time.Since(startTime), pd.Ticks())
+	// time.Sleep(10 * time.Second)
 
 	f, err := os.OpenFile("snapshot.png", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		panic(err)
 	}
 
-	png.Encode(f, pd.Snapshot())
+	png.Encode(f, pd.TakeSnapshot())
 
 	f.Close()
 }

@@ -43,7 +43,7 @@ func (vm *VirtualMachine) Run(dt time.Duration) {
 		done <- struct{}{}
 	}(done)
 
-	go vm.Model.Observe(ticks, func(n uint64, s Space) {
+	vm.Model.Observe(ticks, func(n uint64, s Space) {
 		// Limiting the renders per second.
 		if time.Since(lastTime) < 1000/time.Duration(vm.rendersPerSecond)*time.Millisecond {
 			return

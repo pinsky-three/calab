@@ -13,14 +13,14 @@ func NewPetriDish(vm *calab.VirtualMachine, palette calab.Palette, tps int) *Pet
 
 	pd := &PetriDish{}
 
-	pd.vm = vm
+	pd.VM = vm
 	pd.colorPalette = palette
 	pd.buffer = bytes.NewBuffer([]byte{})
 	pd.img = image.NewRGBA(image.Rect(0, 0, int(dims[0]), int(dims[1])))
-	pd.vm.AddRenderer(pd.renderPNG)
+	pd.VM.AddRenderer(pd.renderPNG)
 
-	pd.vm.Model.SetTPS(tps)
-	pd.vm.SetRPS(tps)
+	pd.VM.Model.SetTPS(tps)
+	pd.VM.SetRPS(tps)
 
 	return pd
 }
