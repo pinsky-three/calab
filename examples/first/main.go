@@ -52,11 +52,11 @@ func main() {
 	rule := cyclic.MustNewRockPaperScissor(len(palette), 1, 4)
 
 	// bulk into dynamical system.
-	system := calab.BulkDynamicalSystem(space, rule, 60)
+	system := calab.BulkDynamicalSystem(space, rule)
 
 	srv := remote.NewBinaryRemote(3000, "/", pd.binaryChannel)
 
-	vm := calab.NewVM(system, 60, pd.renderImage)
+	vm := calab.NewVM(system, pd.renderImage)
 
 	go vm.Run(1000 * time.Second)
 

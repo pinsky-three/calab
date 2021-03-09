@@ -36,12 +36,12 @@ func (vm *VirtualMachine) Run(dt time.Duration) {
 	done := make(chan struct{})
 	lastTime := time.Now()
 
-	vm.Model.RunInfiniteSimulation(ticks, done)
-
 	go func(done chan struct{}) {
 		time.Sleep(dt)
 		done <- struct{}{}
 	}(done)
+
+	vm.Model.RunInfiniteSimulation(ticks, done)
 
 	vm.Model.Observe(ticks, func(n uint64, s Space) {
 		// Limiting the renders per second.
@@ -57,4 +57,17 @@ func (vm *VirtualMachine) Run(dt time.Duration) {
 		lastTime = time.Now()
 	})
 
+}
+
+// RunTicks runs your simulation for n ticks.
+func (vm *VirtualMachine) RunTicks(ticks uint64) {
+	ticksChannel := make(chan uint64)
+
+	vm.Model.RunSimulation(ticks, ticksChannel)
+
+	vm.Model.Observe(ticksChannel, func(n uint64, s Space) {
+		for _, renderer := range vm.renderers {
+			renderer(n, s)
+		}
+	})
 }

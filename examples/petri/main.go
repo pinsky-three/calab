@@ -20,16 +20,17 @@ func main() {
 
 	width, height := 256, 256
 
-	palette := calab.Palette{0: c1, 1: c0, 2: c1, 3: c0}
+	// palette := calab.Palette{0: c1, 1: c0, 2: c1}
+	palette := calab.NewPalette(c0, c1, 5)
 
 	// creating the space.
-	nh := board.MooreNeighborhood(1, false)
+	nh := board.MooreNeighborhood(2, false)
 	bound := board.ToroidBounded()
 	space := board.MustNew(width, height, nh, bound, board.RandomInit, board.UniformNoise(len(palette)))
 
 	// creating the rule.
 	// rule := lifelike.MustNew(lifelike.DayAndNight)
-	rule := cyclic.MustNewRockPaperScissor(len(palette), 1, 4)
+	rule := cyclic.MustNewRockPaperScissor(len(palette), 1, 0)
 
 	// bulk into dynamical system.
 	system := calab.BulkDynamicalSystem(space, rule)
@@ -42,9 +43,13 @@ func main() {
 
 	startTime := time.Now()
 
-	pd.Run(10 * time.Second)
+	// pd.RunSync(30 * time.Second)
+	// done := pd.Run(10 * time.Second)
 
-	fmt.Printf("experiment duration: %s | total ticks: %d", time.Since(startTime), pd.Ticks())
+	// <-done
+	pd.RunSyncTicks(1000)
+
+	fmt.Printf("experiment duration: %s | total ticks: %d\n", time.Since(startTime), pd.Ticks())
 	// time.Sleep(10 * time.Second)
 
 	f, err := os.OpenFile("snapshot.png", os.O_CREATE|os.O_RDWR, 0644)
@@ -52,7 +57,7 @@ func main() {
 		panic(err)
 	}
 
-	png.Encode(f, pd.TakeSnapshot())
+	_ = png.Encode(f, pd.TakeSnapshot())
 
 	f.Close()
 }

@@ -16,16 +16,16 @@ import (
 // SnapshotImageFormat ...
 type SnapshotImageFormat string
 
-// SnapshotImageFormat ...
+// PNGFormat ...
 const PNGFormat SnapshotImageFormat = "png"
 
-// SnapshotImageFormat ...
+// JPEGFormat ...
 const JPEGFormat SnapshotImageFormat = "jpeg"
 
 // ExperimentsStorage ...
 type ExperimentsStorage interface {
 	SavePetriDish(pd *PetriDish, withVM bool) error
-	SaveSnapshot(name string, img image.Image, format SnapshotImageFormat) error
+	SaveSnapshot(filename string, img image.Image, format SnapshotImageFormat) error
 }
 
 // FileStorage implements a Experiment Storage.
