@@ -22,8 +22,8 @@ const PNGFormat SnapshotImageFormat = "png"
 // JPEGFormat ...
 const JPEGFormat SnapshotImageFormat = "jpeg"
 
-// ExperimentsStorage ...
-type ExperimentsStorage interface {
+// Storage ...
+type Storage interface {
 	SavePetriDish(pd *PetriDish, withVM bool) error
 	SaveSnapshot(filename string, img image.Image, format SnapshotImageFormat) error
 }

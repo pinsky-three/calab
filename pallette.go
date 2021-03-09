@@ -10,12 +10,26 @@ import (
 type Palette map[uint64]color.Color
 
 // NewPalette creates a new pallette
-func NewPalette(colorStart colorful.Color, colorEnd colorful.Color, states int) Palette {
-	pallette := Palette{}
+func NewPalette(colorStart colorful.Color, colorEnd colorful.Color, intervals int) Palette {
+	palette := Palette{}
 
-	for i := 0; i < states; i++ {
-		pallette[uint64(i)] = colorStart.BlendHcl(colorEnd, float64(i)/float64(states-1))
+	for i := 0; i < intervals; i++ {
+		palette[uint64(i)] = colorStart.BlendHsv(colorEnd, float64(i)/float64(intervals-1))
 	}
 
-	return pallette
+	return palette
+}
+
+// NewCyclicPalette returns a cyclic palette.
+func NewCyclicPalette(c1 colorful.Color, c2 colorful.Color, intervals int) Palette {
+	palette := Palette{}
+
+	for i := 0; i < intervals/2; i++ {
+		palette[uint64(i)] = c1
+		if intervals%2 != 0 {
+			palette[uint64(i+1)] = c2
+		}
+	}
+
+	return palette
 }
