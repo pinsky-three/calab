@@ -18,10 +18,10 @@ func main() {
 	var c0, _ = colorful.Hex("#0e1717")
 	var c1, _ = colorful.Hex("#fbe722")
 
-	width, height := 256, 256
+	width, height := 128, 128
 
-	// palette := calab.Palette{0: c1, 1: c0, 2: c1}
-	palette := calab.NewPalette(c0, c1, 3)
+	palette := calab.Palette{0: c1, 1: c0, 2: c1}
+	// palette := calab.NewCyclicPalette(c0, c1, 5)
 
 	// creating the space.
 	nh := board.MooreNeighborhood(1, false)

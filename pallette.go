@@ -26,9 +26,11 @@ func NewCyclicPalette(c1 colorful.Color, c2 colorful.Color, intervals int) Palet
 
 	for i := 0; i < intervals/2; i++ {
 		palette[uint64(i)] = c1
-		if intervals%2 != 0 {
-			palette[uint64(i+1)] = c2
-		}
+		palette[uint64(i+1)] = c2
+	}
+
+	if intervals%2 != 0 {
+		palette[uint64(intervals/2+1)] = c1
 	}
 
 	return palette
