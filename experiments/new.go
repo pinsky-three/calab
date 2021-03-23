@@ -5,23 +5,25 @@ import (
 	"image"
 
 	"github.com/minskylab/calab"
+	uuid "github.com/satori/go.uuid"
 )
 
 // NewPetriDish returns a new petridish.
-func NewPetriDish(vm *calab.VirtualMachine, palette calab.Palette, tps int) *PetriDish {
-	dims := vm.Model.Space.Dims()
+func NewPetriDish(vcm *calab.VirtualComputationalModel, palette calab.Palette, tps int) *PetriDish {
+	dims := vcm.Model.Space.Dims()
 
 	pd := &PetriDish{}
+	pd.ID = uuid.NewV4().String()
 
-	pd.VM = vm
+	pd.VCM = vcm
 	pd.colorPalette = palette
 	pd.buffer = bytes.NewBuffer([]byte{})
 	pd.img = image.NewRGBA(image.Rect(0, 0, int(dims[0]), int(dims[1])))
 
-	pd.VM.AddRenderer(pd.renderImage)
+	pd.VCM.AddRenderer(pd.renderImage)
 
-	pd.VM.Model.SetTPS(tps)
-	pd.VM.SetRPS(tps)
+	pd.VCM.Model.SetTPS(tps)
+	pd.VCM.SetRPS(tps)
 
 	return pd
 }

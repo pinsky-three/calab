@@ -14,7 +14,8 @@ const timeMode runMode = "time"
 
 // PetriDish represents a fully instrumented system.
 type PetriDish struct {
-	VM             *calab.VirtualMachine
+	ID             string
+	VCM            *calab.VirtualComputationalModel
 	buffer         *bytes.Buffer
 	img            *image.RGBA
 	colorPalette   calab.Palette

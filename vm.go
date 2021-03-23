@@ -4,16 +4,16 @@ import (
 	"time"
 )
 
-// VirtualMachine ...
-type VirtualMachine struct {
+// VirtualComputationalModel ...
+type VirtualComputationalModel struct {
 	Model            *DynamicalSystem
 	rendersPerSecond int
 	renderers        []Renderer
 }
 
 // NewVM ...
-func NewVM(model *DynamicalSystem, renderers ...Renderer) *VirtualMachine {
-	return &VirtualMachine{
+func NewVM(model *DynamicalSystem, renderers ...Renderer) *VirtualComputationalModel {
+	return &VirtualComputationalModel{
 		rendersPerSecond: 60,
 		Model:            model,
 		renderers:        renderers,
@@ -21,17 +21,17 @@ func NewVM(model *DynamicalSystem, renderers ...Renderer) *VirtualMachine {
 }
 
 // AddRenderer ...
-func (vm *VirtualMachine) AddRenderer(r Renderer) {
+func (vm *VirtualComputationalModel) AddRenderer(r Renderer) {
 	vm.renderers = append(vm.renderers, r)
 }
 
 // SetRPS sets renders per second rate.
-func (vm *VirtualMachine) SetRPS(rendersPerSecond int) {
+func (vm *VirtualComputationalModel) SetRPS(rendersPerSecond int) {
 	vm.rendersPerSecond = rendersPerSecond
 }
 
 // Run ...
-func (vm *VirtualMachine) Run(dt time.Duration) {
+func (vm *VirtualComputationalModel) Run(dt time.Duration) {
 	ticks := make(chan uint64)
 	done := make(chan struct{})
 	lastTime := time.Now()
@@ -60,7 +60,7 @@ func (vm *VirtualMachine) Run(dt time.Duration) {
 }
 
 // RunTicks runs your simulation for n ticks.
-func (vm *VirtualMachine) RunTicks(ticks uint64) {
+func (vm *VirtualComputationalModel) RunTicks(ticks uint64) {
 	ticksChannel := make(chan uint64)
 
 	vm.Model.RunSimulation(ticks, ticksChannel)

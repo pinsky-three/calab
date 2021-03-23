@@ -15,7 +15,7 @@ func NewRockPaperScissor(states, threshold int, stochastic int) (*RockPaperSciss
 	}, nil
 }
 
-// MustNewRockPaperScissor fails is panic occurs.
+// MustNewRockPaperScissor fails with panic occurs.
 func MustNewRockPaperScissor(states, threshold int, stochastic int) *RockPaperScissor {
 	ca, err := NewRockPaperScissor(states, threshold, stochastic)
 	if err != nil {

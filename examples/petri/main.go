@@ -14,7 +14,6 @@ import (
 )
 
 func main() {
-
 	var c0, _ = colorful.Hex("#0e1717")
 	var c1, _ = colorful.Hex("#fbe722")
 
