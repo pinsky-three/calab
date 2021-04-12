@@ -28,3 +28,11 @@ func MooreNeighborhood(radius int, includeCenter bool) Neighborhood {
 		return nh
 	}
 }
+
+func VonNewmannNeighborhood(radius int, includeCenter bool) Neighborhood {
+	return func(board *[][]uint64, x, y int64, bounder Bounder2D) []uint64 {
+		nh := []uint64{}
+
+		return nh
+	}
+}

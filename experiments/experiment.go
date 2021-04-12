@@ -1,6 +1,9 @@
 package experiments
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 type ExperimentInterface struct {
 	host string
@@ -8,10 +11,10 @@ type ExperimentInterface struct {
 }
 
 type Experiment struct {
-	mu            sync.Locker
-	dishes        map[string]*PetriDish
-	dishesDones   map[string]chan struct{}
-	userInterface ExperimentInterface
+	mu          sync.Locker
+	dishes      map[string]*PetriDish
+	dishesDones map[string]chan struct{}
+	control     ExperimentInterface
 }
 
 func (exp *Experiment) syncDoneDish(dishID string, done chan struct{}) {
@@ -41,7 +44,7 @@ func (exp *Experiment) DeletePetriDish(id string) {
 func (exp *Experiment) Run(dishID string, opts *Options) {
 	var done chan struct{}
 
-	if opts.ticks == opts.ticks {
+	if (opts.ticks != nil) == (opts.time != nil) {
 		return
 	}
 
@@ -57,7 +60,7 @@ func (exp *Experiment) Run(dishID string, opts *Options) {
 }
 
 func (exp *Experiment) Play(dishID string) {
-	// exp.dishes[dishID].VCM.
+	exp.dishes[dishID].Run(24 * time.Hour)
 }
 
 func (exp *Experiment) Pause(dishID string) {
