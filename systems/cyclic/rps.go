@@ -70,7 +70,7 @@ func (prs *RockPaperScissor) Evolve(space calab.Space) calab.Space {
 		}
 	}
 
-	nextSpace := make([]uint64, dims[0]*dims[1])
+	nextSpace := []uint64{}
 	for i := range newBoard {
 		nextSpace = append(nextSpace, newBoard[i]...)
 	}

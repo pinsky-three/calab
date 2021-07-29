@@ -34,12 +34,9 @@ type DynamicalSystem struct {
 	lastTime time.Time
 }
 
-// InitialSource represents a simple 2d initial state supplier.
-type InitialSource func(states uint64) []uint64
-
 // BulkDynamicalSystem bulks a new DS.
-func BulkDynamicalSystem(s Space, r Evolvable, initSpace InitialSource) *DynamicalSystem {
-	s = s.Branch(initSpace(r.Symbols()))
+func BulkDynamicalSystem(s Space, r Evolvable) *DynamicalSystem {
+	// s = s.Branch(initSpace(r.Symbols()))
 
 	return &DynamicalSystem{
 		ID:             uuid.NewV4().String(),

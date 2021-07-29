@@ -42,13 +42,9 @@ func main() {
 		binaryChannel: make(chan []byte),
 	}
 
-	// creating the space.
-	// nh := board.MooreNeighborhood(1, false)
-	space := board.MustNew(width, height, board.UniformNoise)
-
-	// creating the rule.
-	// rule := lifelike.MustNew(lifelike.DayAndNight)
 	rule := cyclic.MustNewRockPaperScissor(cyclic.ToroidBounded, cyclic.MooreNeighborhood(1, false), len(palette), 1, 4)
+
+	space := board.MustNew(width, height).Fill(board.UniformNoise, rule)
 
 	// bulk into dynamical system.
 	system := calab.BulkDynamicalSystem(space, rule)

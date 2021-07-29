@@ -1,5 +1,9 @@
 package board
 
+import (
+	"github.com/minskylab/calab"
+)
+
 // New returns a new Board2D Space.
 func New(w, h int) (*Board2D, error) {
 	board := [][]uint64{}
@@ -11,15 +15,10 @@ func New(w, h int) (*Board2D, error) {
 		board = append(board, r)
 	}
 
-	// return board
-
-	// board := initialState(int64(w), int64(h), src)
-	dims := []uint64{uint64(len(board)), uint64(len(board[0]))}
-
 	return &Board2D{
+		dims:  []uint64{uint64(w), uint64(h)},
 		Board: board,
 		// totalSymbols: states,
-		dims: dims,
 	}, nil
 }
 
@@ -33,14 +32,14 @@ func MustNew(w, h int) *Board2D {
 	return b
 }
 
-func (s *Board2D) Fill(src Initial2DSource, states uint64) {
-	// board := [][]uint64{}
-	for i := int64(0); i < int64(s.dims[0]); i++ {
-		r := []uint64{}
-		for j := int64(0); j < int64(s.dims[1]); j++ {
-			r = append(r, src(i, j, states))
-		}
+func (s *Board2D) Fill(src Source2D, rule calab.Evolvable) *Board2D {
+	totalStates := rule.Symbols()
 
-		s.Board = append(s.Board, r)
+	for i := int64(0); i < int64(s.dims[0]); i++ {
+		for j := int64(0); j < int64(s.dims[1]); j++ {
+			s.Board[i][j] = src(i, j, totalStates)
+		}
 	}
+
+	return s
 }
