@@ -43,12 +43,12 @@ func main() {
 	}
 
 	// creating the space.
-	nh := board.MooreNeighborhood(1, false)
-	space := board.MustNew(width, height, nh, board.ToroidBounded, board.RandomInit, board.UniformNoise(len(palette)))
+	// nh := board.MooreNeighborhood(1, false)
+	space := board.MustNew(width, height, board.UniformNoise)
 
 	// creating the rule.
 	// rule := lifelike.MustNew(lifelike.DayAndNight)
-	rule := cyclic.MustNewRockPaperScissor(len(palette), 1, 4)
+	rule := cyclic.MustNewRockPaperScissor(cyclic.ToroidBounded, cyclic.MooreNeighborhood(1, false), len(palette), 1, 4)
 
 	// bulk into dynamical system.
 	system := calab.BulkDynamicalSystem(space, rule)

@@ -13,24 +13,22 @@ var system128, system256, system512, system820 *calab.DynamicalSystem
 // var ticks chan uint64
 
 func init() {
-	nh128 := board.MooreNeighborhood(1, false)
-	space128 := board.MustNew(128, 128, nh128, board.ToroidBounded, board.RandomInit, board.UniformNoise(2))
-	rule128 := lifelike.MustNew(lifelike.GameOfLifeRule)
+	classicMoore := lifelike.MooreNeighborhood(1, false)
+
+	space128 := board.MustNew(128, 128)
+	rule128 := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, classicMoore)
 	system128 = calab.BulkDynamicalSystem(space128, rule128)
 
-	nh256 := board.MooreNeighborhood(1, false)
-	space256 := board.MustNew(256, 256, nh256, board.ToroidBounded, board.RandomInit, board.UniformNoise(2))
-	rule256 := lifelike.MustNew(lifelike.GameOfLifeRule)
+	space256 := board.MustNew(256, 256)
+	rule256 := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, classicMoore)
 	system256 = calab.BulkDynamicalSystem(space256, rule256)
 
-	nh512 := board.MooreNeighborhood(1, false)
-	space512 := board.MustNew(512, 512, nh512, board.ToroidBounded, board.RandomInit, board.UniformNoise(2))
-	rule512 := lifelike.MustNew(lifelike.GameOfLifeRule)
+	space512 := board.MustNew(512, 512)
+	rule512 := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, classicMoore)
 	system512 = calab.BulkDynamicalSystem(space512, rule512)
 
-	nh820 := board.MooreNeighborhood(1, false)
-	space820 := board.MustNew(820, 820, nh820, board.ToroidBounded, board.RandomInit, board.UniformNoise(2))
-	rule820 := lifelike.MustNew(lifelike.GameOfLifeRule)
+	space820 := board.MustNew(820, 820)
+	rule820 := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, classicMoore)
 	system820 = calab.BulkDynamicalSystem(space820, rule820)
 }
 

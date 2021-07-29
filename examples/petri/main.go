@@ -10,7 +10,7 @@ import (
 	"github.com/minskylab/calab"
 	"github.com/minskylab/calab/experiments"
 	"github.com/minskylab/calab/spaces/board"
-	"github.com/minskylab/calab/systems/cyclic"
+	"github.com/minskylab/calab/systems/lifelike"
 )
 
 func main() {
@@ -18,18 +18,21 @@ func main() {
 	c1, _ := colorful.Hex("#fbe722")
 
 	width, height := 512, 512
-
+	totalStates := 2
 	// palette := calab.Palette{0: c1, 1: c0, 2: c1}
-	palette := calab.NewCyclicPalette(c0, c1, 5)
-
+	palette := calab.NewCyclicPalette(c0, c1, totalStates)
+	// board.UniformNoise(len(palette))
 	// creating the space.
-	nh := board.MooreNeighborhood(1, false)
-	space := board.MustNew(width, height, nh, board.ToroidBounded, board.RandomInit, board.UniformNoise(len(palette)))
+	// nh := board.MooreNeighborhood(1, false)
+	space := board.MustNew(width, height)
 
+	// space.Fill(, uint64(totalStates))
 	// creating the rule.
-	// rule := lifelike.MustNew(lifelike.DayAndNight)
-	rule := cyclic.MustNewRockPaperScissor(len(palette), 2, 1)
 
+	rule := lifelike.MustNew(lifelike.DayAndNight, lifelike.ToroidBounded, lifelike.MooreNeighborhood(1, false))
+
+	// rule := cyclic.MustNewRockPaperScissor(len(palette), 2, 1)
+	// lifelike.
 	// bulk into dynamical system.
 	system := calab.BulkDynamicalSystem(space, rule)
 
