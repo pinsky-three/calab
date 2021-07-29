@@ -1,7 +1,6 @@
 package experiments
 
 import (
-	"fmt"
 	"image"
 
 	"github.com/minskylab/calab"
@@ -13,8 +12,6 @@ func (pd *PetriDish) snapshot() {
 	dims := space.Dims()
 
 	w, h := dims[0], dims[1]
-
-	fmt.Println(space.Space())
 
 	for i := int64(0); i < int64(w); i++ {
 		for j := int64(0); j < int64(h); j++ {

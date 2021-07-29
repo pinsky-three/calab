@@ -17,7 +17,7 @@ func main() {
 	dead, _ := colorful.Hex("#0e1717")
 	alive, _ := colorful.Hex("#fbe722")
 
-	width, height := 2048, 2048
+	width, height := 256, 256
 
 	rule := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, lifelike.MooreNeighborhood(1, false))
 
