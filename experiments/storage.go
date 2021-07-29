@@ -36,7 +36,7 @@ type FileStorage struct {
 
 // SavePetriDish save petridish.
 func (fs *FileStorage) SavePetriDish(pd *PetriDish, withVM bool) error {
-	name := fmt.Sprintf("petri-%s.json", pd.VCM.Model.ID[:6])
+	name := fmt.Sprintf("petri-%s.yaml", pd.Model.Model.ID[:6])
 
 	filename := path.Join(fs.root, name)
 

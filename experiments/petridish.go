@@ -17,7 +17,7 @@ const (
 // PetriDish represents a fully instrumented system.
 type PetriDish struct {
 	ID             string
-	VCM            *calab.VirtualComputationalModel
+	Model          *calab.VirtualComputationalModel
 	buffer         *bytes.Buffer
 	img            *image.RGBA
 	colorPalette   calab.Palette

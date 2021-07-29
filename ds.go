@@ -23,21 +23,19 @@ type Evolvable interface {
 
 // DynamicalSystem represents a generalized dynamical system.
 type DynamicalSystem struct {
-	ID             string
-	ticksPerSecond int
-
+	ID    string
 	Space Space
 	rule  Evolvable
 
-	ticks    uint64
+	ticksPerSecond int
+	ticks          uint64
+
 	running  bool
 	lastTime time.Time
 }
 
 // BulkDynamicalSystem bulks a new DS.
 func BulkDynamicalSystem(s Space, r Evolvable) *DynamicalSystem {
-	// s = s.Branch(initSpace(r.Symbols()))
-
 	return &DynamicalSystem{
 		ID:             uuid.NewV4().String(),
 		Space:          s,
