@@ -14,18 +14,17 @@ import (
 )
 
 func main() {
-	var c0, _ = colorful.Hex("#0e1717")
-	var c1, _ = colorful.Hex("#fbe722")
+	c0, _ := colorful.Hex("#0e1717")
+	c1, _ := colorful.Hex("#fbe722")
 
-	width, height := 128, 128
+	width, height := 512, 512
 
-	palette := calab.Palette{0: c1, 1: c0, 2: c1}
-	// palette := calab.NewCyclicPalette(c0, c1, 5)
+	// palette := calab.Palette{0: c1, 1: c0, 2: c1}
+	palette := calab.NewCyclicPalette(c0, c1, 5)
 
 	// creating the space.
 	nh := board.MooreNeighborhood(1, false)
-	bound := board.ToroidBounded()
-	space := board.MustNew(width, height, nh, bound, board.RandomInit, board.UniformNoise(len(palette)))
+	space := board.MustNew(width, height, nh, board.ToroidBounded, board.RandomInit, board.UniformNoise(len(palette)))
 
 	// creating the rule.
 	// rule := lifelike.MustNew(lifelike.DayAndNight)

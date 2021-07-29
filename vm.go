@@ -56,7 +56,6 @@ func (vm *VirtualComputationalModel) Run(dt time.Duration) {
 
 		lastTime = time.Now()
 	})
-
 }
 
 // RunTicks runs your simulation for n ticks.

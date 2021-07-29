@@ -28,7 +28,6 @@ func (exp *Experiment) syncDoneDish(dishID string, done chan struct{}) {
 		delete(exp.dishesDones, dishID)
 		mu.Unlock()
 	}(done, dishID, exp.mu)
-
 }
 
 func (exp *Experiment) AddPetriDish(pd *PetriDish) {
@@ -64,15 +63,12 @@ func (exp *Experiment) Play(dishID string) {
 }
 
 func (exp *Experiment) Pause(dishID string) {
-
 }
 
 func (exp *Experiment) Snapshot(dishID string) {
-
 }
 
 func (exp *Experiment) Timelapse(dishID string) {
-
 }
 
 /*

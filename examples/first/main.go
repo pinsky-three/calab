@@ -25,8 +25,8 @@ type PetriDish struct {
 }
 
 func main() {
-	var c0, _ = colorful.Hex("#1e2031")
-	var c1, _ = colorful.Hex("#fbe3a1")
+	c0, _ := colorful.Hex("#1e2031")
+	c1, _ := colorful.Hex("#fbe3a1")
 
 	width, height := 168, 56
 
@@ -44,8 +44,7 @@ func main() {
 
 	// creating the space.
 	nh := board.MooreNeighborhood(1, false)
-	bound := board.ToroidBounded()
-	space := board.MustNew(width, height, nh, bound, board.RandomInit, board.UniformNoise(len(palette)))
+	space := board.MustNew(width, height, nh, board.ToroidBounded, board.RandomInit, board.UniformNoise(len(palette)))
 
 	// creating the rule.
 	// rule := lifelike.MustNew(lifelike.DayAndNight)

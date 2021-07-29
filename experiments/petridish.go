@@ -9,8 +9,10 @@ import (
 
 type runMode string
 
-const ticksMode runMode = "ticks"
-const timeMode runMode = "time"
+const (
+	ticksMode runMode = "ticks"
+	timeMode  runMode = "time"
+)
 
 // PetriDish represents a fully instrumented system.
 type PetriDish struct {
