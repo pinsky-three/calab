@@ -30,14 +30,16 @@ func main() {
 
 	vm := calab.NewVM(system)
 
-	pd := experiments.NewPetriDish(vm, calab.Palette{0: dead, 1: alive}, 50000)
+	pd := experiments.NewPetriDish(vm, calab.Palette{0: dead, 1: alive}, 300)
 	pd.Headless = true
 
 	startTime := time.Now()
 
-	done := pd.RunTicks(200)
+	done := pd.RunTicks(100)
 
 	<-done
+
+	expDuration := time.Since(startTime)
 
 	f, err := os.OpenFile("snapshot.png", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
@@ -46,7 +48,7 @@ func main() {
 
 	_ = png.Encode(f, pd.TakeSnapshot())
 
-	fmt.Printf("experiment duration: %s | total ticks: %d\n", time.Since(startTime), pd.Ticks())
+	fmt.Printf("experiment duration: %s | total ticks: %d | tps: %.2f\n", expDuration, pd.Ticks(), float64(pd.Ticks())/expDuration.Seconds())
 
 	f.Close()
 }

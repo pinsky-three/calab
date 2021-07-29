@@ -34,7 +34,7 @@ func (vm *VirtualComputationalModel) SetRPS(rendersPerSecond int) {
 func (vm *VirtualComputationalModel) Run(dt time.Duration) {
 	ticks := make(chan uint64)
 	done := make(chan struct{})
-	lastTime := time.Now()
+	// lastTime := time.Now()
 
 	go func(done chan struct{}) {
 		time.Sleep(dt)
@@ -45,16 +45,19 @@ func (vm *VirtualComputationalModel) Run(dt time.Duration) {
 
 	vm.Model.Observe(ticks, func(n uint64, s Space) {
 		// Limiting the renders per second.
-		if time.Since(lastTime) < 1000/time.Duration(vm.rendersPerSecond)*time.Millisecond {
-			return
-		}
+		// elapsedTime := time.Since(lastTime)
+		// expectedDuration := 1000 / time.Duration(vm.rendersPerSecond) * time.Millisecond
+
+		// if elapsedTime < expectedDuration {
+		// 	time.Sleep(expectedDuration - elapsedTime)
+		// }
 
 		// TODO: Update this rps limiter with an array of its, that's necessary for many renderers.
 		for _, renderer := range vm.renderers {
 			renderer(n, s)
 		}
 
-		lastTime = time.Now()
+		// lastTime = time.Now()
 	})
 }
 
