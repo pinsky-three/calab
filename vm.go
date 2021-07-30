@@ -6,7 +6,7 @@ import (
 
 // VirtualComputationalModel ...
 type VirtualComputationalModel struct {
-	Model            *DynamicalSystem
+	System           *DynamicalSystem
 	rendersPerSecond int
 	renderers        []Renderer
 }
@@ -15,7 +15,7 @@ type VirtualComputationalModel struct {
 func NewVM(model *DynamicalSystem, renderers ...Renderer) *VirtualComputationalModel {
 	return &VirtualComputationalModel{
 		rendersPerSecond: 60,
-		Model:            model,
+		System:           model,
 		renderers:        renderers,
 	}
 }
@@ -41,9 +41,9 @@ func (vm *VirtualComputationalModel) Run(dt time.Duration) {
 		done <- struct{}{}
 	}(done)
 
-	vm.Model.RunInfiniteSimulation(ticks, done)
+	vm.System.RunInfiniteSimulation(ticks, done)
 
-	vm.Model.Observe(ticks, func(n uint64, s Space) {
+	vm.System.Observe(ticks, func(n uint64, s Space) {
 		// Limiting the renders per second.
 		elapsedTime := time.Since(lastTime)
 		expectedDuration := 1000 / time.Duration(vm.rendersPerSecond) * time.Millisecond
@@ -65,9 +65,9 @@ func (vm *VirtualComputationalModel) Run(dt time.Duration) {
 func (vm *VirtualComputationalModel) RunTicks(ticks uint64) {
 	ticksChannel := make(chan uint64)
 
-	vm.Model.RunSimulation(ticks, ticksChannel)
+	vm.System.RunSimulation(ticks, ticksChannel)
 
-	vm.Model.Observe(ticksChannel, func(n uint64, s Space) {
+	vm.System.Observe(ticksChannel, func(n uint64, s Space) {
 		for _, renderer := range vm.renderers {
 			renderer(n, s)
 		}

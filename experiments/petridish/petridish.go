@@ -1,7 +1,6 @@
 package petridish
 
 import (
-	"bytes"
 	"image"
 
 	"github.com/minskylab/calab"
@@ -14,16 +13,14 @@ const (
 	timeMode  runMode = "time"
 )
 
-// PetriDish represents a fully instrumented system.
+// PetriDish is a representation of a virtual computation model.
+// It is a RGBA Image interpreted from an Space.
 type PetriDish struct {
 	ID             string
 	Model          *calab.VirtualComputationalModel
-	buffer         *bytes.Buffer
 	img            *image.RGBA
 	colorPalette   calab.Palette
-	dataHole       chan []byte
 	ticks          uint64
-	storage        Storage
 	currentRunMode runMode
 	timelapse      PetriDishTimelapse
 }

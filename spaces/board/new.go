@@ -32,8 +32,8 @@ func MustNew(w, h int) *Board2D {
 	return b
 }
 
-func (s *Board2D) Fill(src Source2D, rule calab.Evolvable) *Board2D {
-	totalStates := rule.Symbols()
+func (s *Board2D) Fill(src Source2D, dynamic calab.Evolvable) *Board2D {
+	totalStates := dynamic.Symbols()
 
 	for i := int64(0); i < int64(s.dims[0]); i++ {
 		for j := int64(0); j < int64(s.dims[1]); j++ {

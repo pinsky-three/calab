@@ -8,7 +8,7 @@ import (
 
 // Snapshot perform a instant snapshot of your dynamical system.
 func (pd *PetriDish) snapshot() {
-	space := pd.Model.Model.Space
+	space := pd.Model.System.Space
 	dims := space.Dims()
 
 	w, h := dims[0], dims[1]

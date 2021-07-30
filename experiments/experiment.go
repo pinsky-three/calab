@@ -49,6 +49,10 @@ func (exp *Experiment) Run(dishID string, opts *Options) {
 		return
 	}
 
+	if _, exist := exp.dishes[dishID]; !exist {
+		return
+	}
+
 	if opts.ticks != nil {
 		done = exp.dishes[dishID].RunTicks(*opts.ticks)
 	}

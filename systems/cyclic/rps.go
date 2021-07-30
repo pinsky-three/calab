@@ -55,9 +55,6 @@ func (prs *RockPaperScissor) Evolve(space calab.Space) calab.Space {
 			prs.counts(countsMap, i, j, prs.neighborhood(&board, i, j, prs.bounder))
 
 			nextState := (board[i][j] + 1) % prs.totalStates
-			// if nextState > uint64(len(prs.countsMap))-1 {
-			// 	nextState = 0
-			// }
 
 			th := prs.threshold
 			if prs.stochastic > 0 {

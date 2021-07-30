@@ -13,7 +13,7 @@ func NewRockPaperScissor(bounder Bounder2D, neighborhood Neighborhood, totalStat
 
 // MustNewRockPaperScissor fails with panic occurs.
 func MustNewRockPaperScissor(bounder Bounder2D, neighborhood Neighborhood, totalStates, threshold, stochastic int) *RockPaperScissor {
-	ca, err := NewRockPaperScissor(bounder, neighborhood, threshold, totalStates, stochastic)
+	ca, err := NewRockPaperScissor(bounder, neighborhood, totalStates, threshold, stochastic)
 	if err != nil {
 		panic(err)
 	}
