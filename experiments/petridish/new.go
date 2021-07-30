@@ -20,12 +20,13 @@ func NewFromVCM(vcm *calab.VirtualComputationalModel) *PetriDish {
 
 	pd := &PetriDish{}
 	pd.ID = uuid.NewV4().String()
-
+	pd.observers = []chan image.Image{}
+	pd.cache = map[uint64]image.Image{}
 	pd.Model = vcm
 	pd.colorPalette = calab.MonochromePalette(vcm.System.Dynamic.Symbols())
 	pd.img = image.NewRGBA(image.Rect(0, 0, int(dims[0]), int(dims[1])))
 
-	pd.Model.AddRenderer(pd.renderImage)
+	pd.Model.AddRenderer(pd.observation)
 
 	pd.Model.System.SetTPS(DefaultTPS)
 	pd.Model.SetRPS(DefaultTPS)

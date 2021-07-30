@@ -20,17 +20,30 @@ func (pd *PetriDish) snapshot() {
 	}
 }
 
-func (pd *PetriDish) renderImage(n uint64, s calab.Space) {
+func (pd *PetriDish) observation(n uint64, s calab.Space) {
 	// if !pd.Headless {
 	// 	pd.snapshot()
 	// }
+
 	pd.ticks = n
+
+	for _, observer := range pd.observers {
+		observer <- pd.TakeSnapshot()
+	}
+
 	// pd.dataHole <- pd.buffer.Bytes()
 }
 
 // TakeSnapshot take a snapshot.
 func (pd *PetriDish) TakeSnapshot() image.Image {
+	n := pd.ticks
+	if _, hasCache := pd.cache[n]; hasCache {
+		delete(pd.cache, n-2)
+		return pd.cache[n]
+	}
+
 	pd.snapshot()
+	pd.cache[n] = pd.img
 	return pd.img
 }
 

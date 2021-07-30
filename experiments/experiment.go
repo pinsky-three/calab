@@ -1,10 +1,12 @@
 package experiments
 
 import (
+	"image"
 	"sync"
 	"time"
 
 	"github.com/minskylab/calab/experiments/petridish"
+	"github.com/minskylab/calab/experiments/utils"
 )
 
 type ExperimentInterface struct {
@@ -71,7 +73,21 @@ func (exp *Experiment) Play(dishID string) {
 func (exp *Experiment) Pause(dishID string) {
 }
 
-func (exp *Experiment) Snapshot(dishID string) {
+func (exp *Experiment) Snapshot(dishID string) (string, uint64) {
+	filename := "snapshot_" + dishID + "_" + time.Now().Format("2006_01_02_15_04_05") + ".png"
+	utils.SaveSnapshotAsPNG(exp.dishes[dishID], filename)
+	return filename, exp.dishes[dishID].Ticks()
+}
+
+func (exp *Experiment) Ticks(dishID string) uint64 {
+	return exp.dishes[dishID].Ticks()
+}
+
+func (exp *Experiment) Observe(dishID string) (chan image.Image, error) {
+	channel := make(chan image.Image, 1)
+	exp.dishes[dishID].RegisterNewObserver(channel)
+
+	return channel, nil
 }
 
 func (exp *Experiment) Timelapse(dishID string) {

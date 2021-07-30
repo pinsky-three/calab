@@ -23,4 +23,6 @@ type PetriDish struct {
 	ticks          uint64
 	currentRunMode runMode
 	timelapse      PetriDishTimelapse
+	observers      []chan image.Image
+	cache          map[uint64]image.Image
 }

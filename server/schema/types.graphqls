@@ -1,0 +1,26 @@
+type DynamicalSystem {
+  id: ID!
+}
+
+type PetriDishSnapshot {
+  petriDishID: ID!
+  tickStamp: Int!
+
+  image: String!
+}
+
+type PetriDishFrame {
+  petriDishID: ID!
+  tickStamp: Int!
+
+  data: String!
+}
+
+type PetriDish {
+  id: ID!
+  ticks: Int!
+
+  system: DynamicalSystem!
+
+  snapshots: [PetriDishSnapshot!]!
+}
