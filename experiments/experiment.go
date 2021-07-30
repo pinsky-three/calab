@@ -3,6 +3,8 @@ package experiments
 import (
 	"sync"
 	"time"
+
+	"github.com/minskylab/calab/experiments/petridish"
 )
 
 type ExperimentInterface struct {
@@ -12,7 +14,7 @@ type ExperimentInterface struct {
 
 type Experiment struct {
 	mu          sync.Locker
-	dishes      map[string]*PetriDish
+	dishes      map[string]*petridish.PetriDish
 	dishesDones map[string]chan struct{}
 	control     ExperimentInterface
 }
@@ -30,7 +32,7 @@ func (exp *Experiment) syncDoneDish(dishID string, done chan struct{}) {
 	}(done, dishID, exp.mu)
 }
 
-func (exp *Experiment) AddPetriDish(pd *PetriDish) {
+func (exp *Experiment) AddPetriDish(pd *petridish.PetriDish) {
 	exp.dishes[pd.ID] = pd
 }
 

@@ -1,4 +1,4 @@
-package experiments
+package petridish
 
 import (
 	"image"
@@ -21,9 +21,9 @@ func (pd *PetriDish) snapshot() {
 }
 
 func (pd *PetriDish) renderImage(n uint64, s calab.Space) {
-	if !pd.Headless {
-		pd.snapshot()
-	}
+	// if !pd.Headless {
+	// 	pd.snapshot()
+	// }
 	pd.ticks = n
 	// pd.dataHole <- pd.buffer.Bytes()
 }

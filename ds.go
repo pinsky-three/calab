@@ -25,7 +25,7 @@ type Evolvable interface {
 type DynamicalSystem struct {
 	ID    string
 	Space Space
-	rule  Evolvable
+	Rule  Evolvable
 
 	ticksPerSecond int
 	ticks          uint64
@@ -39,7 +39,7 @@ func BulkDynamicalSystem(s Space, r Evolvable) *DynamicalSystem {
 	return &DynamicalSystem{
 		ID:             uuid.NewV4().String(),
 		Space:          s,
-		rule:           r,
+		Rule:           r,
 		ticks:          0,
 		running:        false,
 		ticksPerSecond: 60,

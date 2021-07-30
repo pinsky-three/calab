@@ -1,4 +1,4 @@
-package experiments
+package petridish
 
 import (
 	"bytes"
@@ -25,6 +25,5 @@ type PetriDish struct {
 	ticks          uint64
 	storage        Storage
 	currentRunMode runMode
-	Headless       bool
 	timelapse      PetriDishTimelapse
 }

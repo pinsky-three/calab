@@ -14,7 +14,7 @@ func (ds *DynamicalSystem) Tick() {
 		time.Sleep(expectedDuration - elapsedTime)
 	}
 
-	ds.rule.Evolve(ds.Space)
+	ds.Rule.Evolve(ds.Space)
 
 	ds.lastTime = time.Now()
 	ds.ticks++

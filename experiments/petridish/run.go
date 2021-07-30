@@ -1,4 +1,4 @@
-package experiments
+package petridish
 
 import "time"
 
