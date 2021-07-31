@@ -14,6 +14,7 @@ import (
 
 func basicLifeLike(w, h int, lifeRule *lifelike.Rule) *petridish.PetriDish {
 	dynamic := lifelike.MustNew(lifeRule, lifelike.ToroidBounded, lifelike.MooreNeighborhood(1, false))
+
 	space := board.MustNew(w, h).Fill(board.UniformNoise, dynamic)
 	return petridish.NewFromSystem(calab.BulkDynamicalSystem(space, dynamic))
 }
@@ -28,7 +29,7 @@ func fastCyclicAutomata(w, h int, radius, states, threshold, stochastic int) *pe
 
 func main() {
 	classicLifeLike := basicLifeLike(256, 256, lifelike.GameOfLifeRule)
-	rockPaperSicsors := fastCyclicAutomata(256, 256, 2, 7, 2, 1)
+	rockPaperSicsors := fastCyclicAutomata(256, 256, 2, 6, 2, 1)
 
 	experiment := experiments.New()
 
@@ -38,5 +39,5 @@ func main() {
 	fmt.Printf("classicLifeLike id: %s\n", classicLifeLike.ID)
 	fmt.Printf("rockPaperSicsors id: %s\n", rockPaperSicsors.ID)
 
-	server.LaunchServer(experiment)
+	server.ServeExperiment(experiment, 8080)
 }
