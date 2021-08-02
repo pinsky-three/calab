@@ -21,17 +21,16 @@ func (pd *PetriDish) snapshot() {
 }
 
 func (pd *PetriDish) observation(n uint64, s calab.Space) {
-	// if !pd.Headless {
-	// 	pd.snapshot()
-	// }
-
 	pd.ticks = n
+
+	// calculating mean tps
+	// go func() {
+	// 	pd.ticks
+	// }()
 
 	for _, observer := range pd.observers {
 		observer <- pd.TakeSnapshot()
 	}
-
-	// pd.dataHole <- pd.buffer.Bytes()
 }
 
 // TakeSnapshot take a snapshot.

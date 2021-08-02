@@ -14,7 +14,7 @@ const (
 )
 
 // PetriDish is a representation of a virtual computation model.
-// It is a RGBA Image interpreted from an Space.
+// It is a RGBA Image interpretation from an Space.
 type PetriDish struct {
 	ID             string
 	Model          *calab.VirtualComputationalModel
@@ -25,4 +25,5 @@ type PetriDish struct {
 	timelapse      PetriDishTimelapse
 	observers      []chan image.Image
 	cache          map[uint64]image.Image
+	meanTPS        float64
 }

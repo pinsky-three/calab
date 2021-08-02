@@ -7,15 +7,19 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-const DefaultTPS = 1 << 20
+type PetriDishOption func(*PetriDish) *PetriDish
 
-func NewFromSystem(system *calab.DynamicalSystem) *PetriDish {
+func NewFromSystem(system *calab.DynamicalSystem, opts ...PetriDishOption) *PetriDish {
 	vm := calab.NewVM(system)
-	return NewFromVCM(vm)
+	return NewFromVCM(vm, opts...)
+}
+
+func NewDefault(system *calab.DynamicalSystem) *PetriDish {
+	return NewFromSystem(system, WithTPSMonitor)
 }
 
 // NewFromVCM returns a new petridish.
-func NewFromVCM(vcm *calab.VirtualComputationalModel) *PetriDish {
+func NewFromVCM(vcm *calab.VirtualComputationalModel, opts ...PetriDishOption) *PetriDish {
 	dims := vcm.System.Space.Dims()
 
 	pd := &PetriDish{}
@@ -28,8 +32,12 @@ func NewFromVCM(vcm *calab.VirtualComputationalModel) *PetriDish {
 
 	pd.Model.AddRenderer(pd.observation)
 
-	pd.Model.System.SetTPS(DefaultTPS)
-	pd.Model.SetRPS(DefaultTPS)
+	for _, opt := range opts {
+		pd = opt(pd)
+	}
+
+	// pd.Model.System.SetTPS(DefaultTPS)
+	// pd.Model.SetRPS(DefaultTPS)
 
 	return pd
 }

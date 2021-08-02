@@ -6,17 +6,17 @@ import (
 
 // VirtualComputationalModel ...
 type VirtualComputationalModel struct {
-	System           *DynamicalSystem
-	rendersPerSecond int
-	renderers        []Renderer
+	System *DynamicalSystem
+	// rendersPerSecond int
+	renderers []Renderer
 }
 
 // NewVM ...
 func NewVM(model *DynamicalSystem, renderers ...Renderer) *VirtualComputationalModel {
 	return &VirtualComputationalModel{
-		rendersPerSecond: 60,
-		System:           model,
-		renderers:        renderers,
+		// rendersPerSecond: 60,
+		System:    model,
+		renderers: renderers,
 	}
 }
 
@@ -26,15 +26,15 @@ func (vm *VirtualComputationalModel) AddRenderer(r Renderer) {
 }
 
 // SetRPS sets renders per second rate.
-func (vm *VirtualComputationalModel) SetRPS(rendersPerSecond int) {
-	vm.rendersPerSecond = rendersPerSecond
-}
+// func (vm *VirtualComputationalModel) SetRPS(rendersPerSecond int) {
+// 	vm.rendersPerSecond = rendersPerSecond
+// }
 
 // Run ...
 func (vm *VirtualComputationalModel) Run(dt time.Duration) {
 	ticks := make(chan uint64)
 	done := make(chan struct{})
-	lastTime := time.Now()
+	// lastTime := time.Now()
 
 	go func(done chan struct{}) {
 		time.Sleep(dt)
@@ -45,19 +45,19 @@ func (vm *VirtualComputationalModel) Run(dt time.Duration) {
 
 	vm.System.Observe(ticks, func(n uint64, s Space) {
 		// Limiting the renders per second.
-		elapsedTime := time.Since(lastTime)
-		expectedDuration := 1000 / time.Duration(vm.rendersPerSecond) * time.Millisecond
+		// elapsedTime := time.Since(lastTime)
+		// expectedDuration := 1000 / time.Duration(vm.rendersPerSecond) * time.Millisecond
 
-		if elapsedTime < expectedDuration {
-			time.Sleep(expectedDuration - elapsedTime)
-		}
+		// if elapsedTime < expectedDuration {
+		// 	time.Sleep(expectedDuration - elapsedTime)
+		// }
 
 		// TODO: Update this rps limiter with an array of its, that's necessary for many renderers.
 		for _, renderer := range vm.renderers {
 			renderer(n, s)
 		}
 
-		lastTime = time.Now()
+		// lastTime = time.Now()
 	})
 }
 

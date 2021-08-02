@@ -6,6 +6,8 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+const DefaultTPS = 1 << 20
+
 // Space have the task to describe the lattice space of a any dynamical system.
 type Space interface {
 	Dims() []uint64
@@ -42,7 +44,7 @@ func BulkDynamicalSystem(s Space, d Evolvable) *DynamicalSystem {
 		Dynamic:        d,
 		ticks:          0,
 		running:        false,
-		ticksPerSecond: 60,
+		ticksPerSecond: DefaultTPS,
 	}
 }
 
