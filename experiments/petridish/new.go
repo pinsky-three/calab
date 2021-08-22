@@ -9,6 +9,10 @@ import (
 
 type PetriDishOption func(*PetriDish) *PetriDish
 
+func NewFromSpaceAndDynamic(space calab.Space, dynamic calab.Evolvable, opts ...PetriDishOption) *PetriDish {
+	return NewFromSystem(calab.BulkDynamicalSystem(space, dynamic), opts...)
+}
+
 func NewFromSystem(system *calab.DynamicalSystem, opts ...PetriDishOption) *PetriDish {
 	vm := calab.NewVM(system)
 	return NewFromVCM(vm, opts...)

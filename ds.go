@@ -17,8 +17,8 @@ type Space interface {
 	Branch(space []uint64) Space
 }
 
-// Evolvable saves how the space evolve over time.
-type Evolvable interface {
+// Dynamic saves how the space evolve over time.
+type Dynamic interface {
 	Evolve(space Space) Space
 	Symbols() uint64
 }
@@ -27,7 +27,7 @@ type Evolvable interface {
 type DynamicalSystem struct {
 	ID      string
 	Space   Space
-	Dynamic Evolvable
+	Dynamic Dynamic
 
 	ticksPerSecond int
 	ticks          uint64
@@ -37,7 +37,7 @@ type DynamicalSystem struct {
 }
 
 // BulkDynamicalSystem bulks a new DS.
-func BulkDynamicalSystem(s Space, d Evolvable) *DynamicalSystem {
+func BulkDynamicalSystem(s Space, d Dynamic) *DynamicalSystem {
 	return &DynamicalSystem{
 		ID:             uuid.NewV4().String(),
 		Space:          s,

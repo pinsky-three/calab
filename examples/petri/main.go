@@ -14,7 +14,7 @@ import (
 func main() {
 	width, height := 512, 512
 
-	rule := lifelike.MustNew(lifelike.HighLifeRule, lifelike.ToroidBounded, lifelike.MooreNeighborhood(1, false))
+	rule := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, lifelike.MooreNeighborhood(1, false))
 	space := board.MustNew(width, height).Fill(board.UniformNoise, rule)
 	system := calab.BulkDynamicalSystem(space, rule)
 
