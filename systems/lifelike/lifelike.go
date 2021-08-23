@@ -24,9 +24,12 @@ func (life *LifeLike) Symbols() uint64 {
 
 // Evolve implements a evolvable system for calab framework.
 func (life *LifeLike) Evolve(space calab.Space) calab.Space {
-	// board := space.(*board.Board2D)
 	spaceState := space.Space()
 	dims := space.Dims()
+
+	if len(dims) != 2 {
+		panic("LifeLike only works with 2D space")
+	}
 
 	board := [][]uint64{}
 
@@ -42,7 +45,7 @@ func (life *LifeLike) Evolve(space calab.Space) calab.Space {
 	for i := int64(0); i < int64(dims[0]); i++ {
 		for j := int64(0); j < int64(dims[1]); j++ {
 			// rule evaluation
-			neighborsSum := int(life.sum(life.neighborhood(&board, i, j, life.bounder)))
+			neighborsSum := life.sum(life.neighborhood(&board, i, j, life.bounder))
 			life.calculateNextState(i, j, neighborsSum, &newBoard)
 		}
 	}
@@ -72,10 +75,10 @@ func (life *LifeLike) calculateNextState(i, j int64, neighborsSum int, board *[]
 	(*board)[i][j] = 0
 }
 
-func (life *LifeLike) sum(states []uint64) uint64 {
-	sum := uint64(0)
+func (life *LifeLike) sum(states []uint64) int {
+	sum := 0
 	for _, s := range states {
-		sum += s
+		sum += int(s)
 	}
 
 	return sum
