@@ -2,11 +2,6 @@ package voronoi
 
 import "github.com/minskylab/calab"
 
-type Voronoi struct {
-	totalStates int
-	states      []int
-}
-
 func (v *Voronoi) bounder(w, h, xi, yi int64) (int64, int64) {
 	if xi > int64(w-1) {
 		xi = 0
@@ -44,7 +39,8 @@ func (v *Voronoi) neighborhood(board *[][]uint64, x, y int64) []uint64 {
 			xi, yi = v.bounder(w, h, xi, yi)
 
 			// s.reusableNeighbors = append(s.reusableNeighbors, uint64(s.Board[xi][yi]))
-			nh = append(nh, uint64((*board)[xi][yi]))
+
+			nh = append(nh, uint64(v.indexToState[int((*board)[xi][yi])]))
 		}
 	}
 
@@ -77,21 +73,31 @@ func (v *Voronoi) Evolve(space calab.Space) calab.Space {
 
 	for i := int64(0); i < int64(dims[0]); i++ {
 		for j := int64(0); j < int64(dims[1]); j++ {
-			neighborhoodSum := v.sum(v.neighborhood(&board, i, j))
+			encodeNeighborhood := v.neighborhood(&board, i, j)
+
+			if isUniqueSymbolComposition(encodeNeighborhood) {
+				continue
+			}
+
+			neighborhoodSum := v.sum(encodeNeighborhood)
 
 			if neighborhoodSum == 0 {
-				newBoard[i][j] = 0
+				// newBoard[i][j] = 0
 				continue
 			}
 
 			// for s := 1; s < v.totalStates+1; s++ {
-			for is, s := range v.states {
-				if neighborhoodSum%s == 0 {
+			for is, s := range v.indexToState {
+				if s == 0 {
+					continue
+				}
+
+				if neighborhoodSum%s != 0 {
 					continue
 				}
 
 				if neighborhoodSum/s == 3 {
-					newBoard[i][j] = uint64(is + 1)
+					newBoard[i][j] = uint64(is)
 					continue
 				}
 
@@ -123,6 +129,20 @@ func (v *Voronoi) Evolve(space calab.Space) calab.Space {
 	return space.Branch(nextSpace)
 }
 
+func isUniqueSymbolComposition(encodeNeighborhood []uint64) bool {
+	lastN := encodeNeighborhood[0]
+
+	for _, n := range encodeNeighborhood {
+		if n != lastN {
+			return false
+		}
+
+		lastN = n
+	}
+
+	return true
+}
+
 func (v *Voronoi) Symbols() uint64 {
-	return uint64(v.totalStates) + 1
+	return uint64(len(v.indexToState))
 }

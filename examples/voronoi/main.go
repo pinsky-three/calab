@@ -46,9 +46,7 @@ func main() {
 	initialState := map[uint64][][]int{}
 
 	for i := 1; i < points+1; i++ {
-		initialState[uint64(i)] = interpolate(
-			horizontalLine(rand.Intn(w-3)+3, rand.Intn(h-3)+3),
-		)
+		initialState[uint64(i)] = horizontalLine(rand.Intn(w-3)+3, rand.Intn(h-3)+3)
 	}
 
 	space := board.MustNew(w, h)
@@ -63,7 +61,7 @@ func main() {
 
 	experiment.Run(ca.ID, experiments.WithTicks(5000))
 
-	time.Sleep(20 * time.Second)
+	time.Sleep(200 * time.Second)
 
 	fmt.Printf("%s ends with %d ticks\n", ca.ID, ca.Ticks())
 
