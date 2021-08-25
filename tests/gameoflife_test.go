@@ -8,30 +8,28 @@ import (
 	"github.com/minskylab/calab/systems/lifelike"
 )
 
-var system128, system256, system512, system820 *calab.DynamicalSystem
+var system128, system256, system512, system1024 *calab.DynamicalSystem
 
 // var ticks chan uint64
 
 func init() {
-	nh128 := board.MooreNeighborhood(1, false)
-	space128 := board.MustNew(128, 128, nh128, board.ToroidBounded, board.RandomInit, board.UniformNoise(2))
-	rule128 := lifelike.MustNew(lifelike.GameOfLifeRule)
+	classicMoore := lifelike.MooreNeighborhood(1, false)
+
+	space128 := board.MustNew(128, 128)
+	rule128 := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, classicMoore)
 	system128 = calab.BulkDynamicalSystem(space128, rule128)
 
-	nh256 := board.MooreNeighborhood(1, false)
-	space256 := board.MustNew(256, 256, nh256, board.ToroidBounded, board.RandomInit, board.UniformNoise(2))
-	rule256 := lifelike.MustNew(lifelike.GameOfLifeRule)
+	space256 := board.MustNew(256, 256)
+	rule256 := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, classicMoore)
 	system256 = calab.BulkDynamicalSystem(space256, rule256)
 
-	nh512 := board.MooreNeighborhood(1, false)
-	space512 := board.MustNew(512, 512, nh512, board.ToroidBounded, board.RandomInit, board.UniformNoise(2))
-	rule512 := lifelike.MustNew(lifelike.GameOfLifeRule)
+	space512 := board.MustNew(512, 512)
+	rule512 := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, classicMoore)
 	system512 = calab.BulkDynamicalSystem(space512, rule512)
 
-	nh820 := board.MooreNeighborhood(1, false)
-	space820 := board.MustNew(820, 820, nh820, board.ToroidBounded, board.RandomInit, board.UniformNoise(2))
-	rule820 := lifelike.MustNew(lifelike.GameOfLifeRule)
-	system820 = calab.BulkDynamicalSystem(space820, rule820)
+	space1024 := board.MustNew(1024, 1024)
+	rule1024 := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, classicMoore)
+	system1024 = calab.BulkDynamicalSystem(space1024, rule1024)
 }
 
 func benchmarkGoL128xITicks(ticks int, b *testing.B) {
@@ -52,9 +50,9 @@ func benchmarkGoL512xITicks(ticks int, b *testing.B) {
 	}
 }
 
-func benchmarkGoL820xITicks(ticks int, b *testing.B) {
+func benchmarkGoL1024xITicks(ticks int, b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		system512.RunSyncSimulation(uint64(ticks))
+		system1024.RunSyncSimulation(uint64(ticks))
 	}
 }
 
@@ -79,9 +77,9 @@ func BenchmarkGoL512x100Ticks(b *testing.B) { benchmarkGoL512xITicks(100, b) }
 func BenchmarkGoL512x200Ticks(b *testing.B) { benchmarkGoL512xITicks(200, b) }
 func BenchmarkGoL512x500Ticks(b *testing.B) { benchmarkGoL512xITicks(500, b) }
 
-func BenchmarkGoL820x1Ticks(b *testing.B)   { benchmarkGoL820xITicks(1, b) }
-func BenchmarkGoL820x10Ticks(b *testing.B)  { benchmarkGoL820xITicks(10, b) }
-func BenchmarkGoL820x20Ticks(b *testing.B)  { benchmarkGoL820xITicks(20, b) }
-func BenchmarkGoL820x100Ticks(b *testing.B) { benchmarkGoL820xITicks(100, b) }
-func BenchmarkGoL820x200Ticks(b *testing.B) { benchmarkGoL820xITicks(200, b) }
-func BenchmarkGoL820x500Ticks(b *testing.B) { benchmarkGoL820xITicks(500, b) }
+func BenchmarkGoL1024x1Ticks(b *testing.B)   { benchmarkGoL1024xITicks(1, b) }
+func BenchmarkGoL1024x10Ticks(b *testing.B)  { benchmarkGoL1024xITicks(10, b) }
+func BenchmarkGoL1024x20Ticks(b *testing.B)  { benchmarkGoL1024xITicks(20, b) }
+func BenchmarkGoL1024x100Ticks(b *testing.B) { benchmarkGoL1024xITicks(100, b) }
+func BenchmarkGoL1024x200Ticks(b *testing.B) { benchmarkGoL1024xITicks(200, b) }
+func BenchmarkGoL1024x500Ticks(b *testing.B) { benchmarkGoL1024xITicks(500, b) }

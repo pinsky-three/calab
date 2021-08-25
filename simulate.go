@@ -1,14 +1,20 @@
 package calab
 
-import "time"
+import (
+	"time"
+)
 
 // Tick execute one tick dynamical system evolution.
 func (ds *DynamicalSystem) Tick() {
-	if time.Since(ds.lastTime) < 1000/time.Duration(ds.ticksPerSecond)*time.Millisecond {
-		return
+	elapsedTime := time.Since(ds.lastTime)
+	expectedDuration := 1000 / time.Duration(ds.ticksPerSecond) * time.Millisecond
+
+	if elapsedTime < expectedDuration {
+		// fmt.Println("waiting", expectedDuration-elapsedTime)
+		time.Sleep(expectedDuration - elapsedTime)
 	}
 
-	ds.rule.Evolve(ds.Space)
+	ds.Dynamic.Evolve(ds.Space)
 
 	ds.lastTime = time.Now()
 	ds.ticks++

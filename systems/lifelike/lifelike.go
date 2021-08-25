@@ -2,7 +2,6 @@ package lifelike
 
 import (
 	"github.com/minskylab/calab"
-	"github.com/minskylab/calab/spaces/board"
 )
 
 // Rule wraps a basic life like cellular automaton rule.
@@ -14,28 +13,49 @@ type Rule struct {
 // LifeLike represents a simple life like cellular automaton rule.
 type LifeLike struct {
 	// board *board.Board2D
-	rule *Rule
+	neighborhood Neighborhood
+	bounder      Bounder2D
+	rule         *Rule
+}
+
+func (life *LifeLike) Symbols() uint64 {
+	return 2
 }
 
 // Evolve implements a evolvable system for calab framework.
-func (life *LifeLike) Evolve(space calab.Space) {
-	board := space.(*board.Board2D)
+func (life *LifeLike) Evolve(space calab.Space) calab.Space {
+	spaceState := space.Space()
 	dims := space.Dims()
 
+	if len(dims) != 2 {
+		panic("LifeLike only works with 2D space")
+	}
+
+	board := [][]uint64{}
+
+	for j := uint64(0); j < uint64(dims[1]); j++ {
+		board = append(board, spaceState[j*dims[1]:(j+1)*dims[1]])
+	}
+
 	newBoard := [][]uint64{}
-	for _, b := range board.Board {
+	for _, b := range board {
 		newBoard = append(newBoard, append([]uint64{}, b...))
 	}
 
 	for i := int64(0); i < int64(dims[0]); i++ {
 		for j := int64(0); j < int64(dims[1]); j++ {
 			// rule evaluation
-			neighborsSum := int(life.sum(board.Neighbors(i, j)))
+			neighborsSum := life.sum(life.neighborhood(&board, i, j, life.bounder))
 			life.calculateNextState(i, j, neighborsSum, &newBoard)
 		}
 	}
 
-	board.Board = newBoard
+	nextSpace := []uint64{}
+	for i := range newBoard {
+		nextSpace = append(nextSpace, newBoard[i]...)
+	}
+
+	return space.Branch(nextSpace)
 }
 
 func (life *LifeLike) calculateNextState(i, j int64, neighborsSum int, board *[][]uint64) {
@@ -55,10 +75,10 @@ func (life *LifeLike) calculateNextState(i, j int64, neighborsSum int, board *[]
 	(*board)[i][j] = 0
 }
 
-func (life *LifeLike) sum(states []uint64) uint64 {
-	sum := uint64(0)
+func (life *LifeLike) sum(states []uint64) int {
+	sum := 0
 	for _, s := range states {
-		sum += s
+		sum += int(s)
 	}
 
 	return sum

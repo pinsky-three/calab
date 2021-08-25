@@ -2,30 +2,29 @@ package board
 
 import "math/rand"
 
-// Initial2DSource represents a simple 2d initial state supplier.
-type Initial2DSource func(x int64, y int64) uint64
-
-// InitialStateGenerator  is a initial state generator.
-type InitialStateGenerator func(w, h int64, source Initial2DSource) [][]uint64
-
-// RandomInit is a random initial source.
-func RandomInit(w, h int64, source Initial2DSource) [][]uint64 {
-	board := [][]uint64{}
-	for i := int64(0); i < w; i++ {
-		r := []uint64{}
-		for j := int64(0); j < h; j++ {
-			r = append(r, source(i, j))
-		}
-
-		board = append(board, r)
-	}
-
-	return board
-}
+// Source2D represents a simple 2d initial state supplier.
+type Source2D func(x int64, y int64, states uint64) (bool, uint64)
 
 // UniformNoise is a basic uniform noise.]
-func UniformNoise(states int) Initial2DSource {
-	return func(x, y int64) uint64 {
-		return uint64(rand.Intn(states))
+func UniformNoise(x, y int64, states uint64) (bool, uint64) {
+	return true, uint64(rand.Intn(int(states)))
+}
+
+func FullState(state uint64) Source2D {
+	return func(x, y int64, states uint64) (bool, uint64) {
+		return true, state
+	}
+}
+
+func SpecificPositions(statesMapping map[uint64][][]int) Source2D {
+	return func(x, y int64, states uint64) (bool, uint64) {
+		for state, position := range statesMapping {
+			for _, pos := range position {
+				if int64(pos[0]) == x && int64(pos[1]) == y {
+					return true, state
+				}
+			}
+		}
+		return false, 0
 	}
 }

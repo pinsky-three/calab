@@ -1,4 +1,4 @@
-package experiments
+package petridish
 
 import (
 	"image"
@@ -8,7 +8,7 @@ import (
 
 // Snapshot perform a instant snapshot of your dynamical system.
 func (pd *PetriDish) snapshot() {
-	space := pd.VCM.Model.Space
+	space := pd.Model.System.Space
 	dims := space.Dims()
 
 	w, h := dims[0], dims[1]
@@ -20,17 +20,29 @@ func (pd *PetriDish) snapshot() {
 	}
 }
 
-func (pd *PetriDish) renderImage(n uint64, s calab.Space) {
-	if !pd.Headless {
-		pd.snapshot()
-	}
+func (pd *PetriDish) observation(n uint64, s calab.Space) {
 	pd.ticks = n
-	// pd.dataHole <- pd.buffer.Bytes()
+
+	// calculating mean tps
+	// go func() {
+	// 	pd.ticks
+	// }()
+
+	for _, observer := range pd.observers {
+		observer <- pd.TakeSnapshot()
+	}
 }
 
 // TakeSnapshot take a snapshot.
 func (pd *PetriDish) TakeSnapshot() image.Image {
+	n := pd.ticks
+	if _, hasCache := pd.cache[n]; hasCache {
+		delete(pd.cache, n-2)
+		return pd.cache[n]
+	}
+
 	pd.snapshot()
+	pd.cache[n] = pd.img
 	return pd.img
 }
 

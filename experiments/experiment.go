@@ -1,8 +1,12 @@
 package experiments
 
 import (
+	"image"
 	"sync"
 	"time"
+
+	"github.com/minskylab/calab/experiments/petridish"
+	"github.com/minskylab/calab/experiments/utils"
 )
 
 type ExperimentInterface struct {
@@ -12,7 +16,7 @@ type ExperimentInterface struct {
 
 type Experiment struct {
 	mu          sync.Locker
-	dishes      map[string]*PetriDish
+	dishes      map[string]*petridish.PetriDish
 	dishesDones map[string]chan struct{}
 	control     ExperimentInterface
 }
@@ -30,7 +34,7 @@ func (exp *Experiment) syncDoneDish(dishID string, done chan struct{}) {
 	}(done, dishID, exp.mu)
 }
 
-func (exp *Experiment) AddPetriDish(pd *PetriDish) {
+func (exp *Experiment) AddPetriDish(pd *petridish.PetriDish) {
 	exp.dishes[pd.ID] = pd
 }
 
@@ -44,6 +48,10 @@ func (exp *Experiment) Run(dishID string, opts *Options) {
 	var done chan struct{}
 
 	if (opts.ticks != nil) == (opts.time != nil) {
+		return
+	}
+
+	if _, exist := exp.dishes[dishID]; !exist {
 		return
 	}
 
@@ -65,7 +73,30 @@ func (exp *Experiment) Play(dishID string) {
 func (exp *Experiment) Pause(dishID string) {
 }
 
-func (exp *Experiment) Snapshot(dishID string) {
+func (exp *Experiment) Snapshot(dishID string) (string, uint64) {
+	filename := "snapshot_" + dishID + "_" + time.Now().Format("2006_01_02_15_04_05") + ".png"
+	if err := utils.SaveSnapshotAsPNG(exp.dishes[dishID], filename); err != nil {
+		panic(err)
+	}
+
+	return filename, exp.dishes[dishID].Ticks()
+}
+
+func (exp *Experiment) Ticks(dishID string) uint64 {
+	return exp.dishes[dishID].Ticks()
+}
+
+// type ObserveFrame struct {
+// 	image image.Image
+// 	tick  uint64
+// 	tps   float64
+// }
+
+func (exp *Experiment) Observe(dishID string) (chan image.Image, error) {
+	channel := make(chan image.Image, 1)
+	exp.dishes[dishID].RegisterNewObserver(channel)
+
+	return channel, nil
 }
 
 func (exp *Experiment) Timelapse(dishID string) {

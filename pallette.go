@@ -35,3 +35,14 @@ func NewCyclicPalette(c1 colorful.Color, c2 colorful.Color, intervals int) Palet
 
 	return palette
 }
+
+func MonochromePalette(states uint64) Palette {
+	palette := Palette{}
+
+	for i := 0; i < int(states); i++ {
+		grey := uint8(i * 255 / (int(states) - 1))
+		palette[uint64(i)] = color.RGBA{grey, grey, grey, 255}
+	}
+
+	return palette
+}

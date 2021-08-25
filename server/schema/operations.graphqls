@@ -1,0 +1,14 @@
+type Query {
+  petriDish(id: ID!): PetriDish!
+}
+
+type Mutation {
+  takeSnapshot(id: ID!): PetriDishSnapshot!
+  run(id: ID!, time: String, ticks: Int): PetriDish!
+  #   sleep(id: ID!): PetriDish!
+  #   reset(id: ID!): PetriDish!
+}
+
+type Subscription {
+  observer(id: ID!): PetriDishFrame!
+}

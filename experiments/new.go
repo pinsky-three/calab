@@ -1,29 +1,17 @@
 package experiments
 
 import (
-	"bytes"
-	"image"
+	"sync"
 
-	"github.com/minskylab/calab"
-	uuid "github.com/satori/go.uuid"
+	"github.com/minskylab/calab/experiments/petridish"
 )
 
-// NewPetriDish returns a new petridish.
-func NewPetriDish(vcm *calab.VirtualComputationalModel, palette calab.Palette, tps int) *PetriDish {
-	dims := vcm.Model.Space.Dims()
+func New() *Experiment {
+	exp := Experiment{}
 
-	pd := &PetriDish{}
-	pd.ID = uuid.NewV4().String()
+	exp.mu = &sync.Mutex{}
+	exp.dishes = map[string]*petridish.PetriDish{}
+	exp.dishesDones = map[string]chan struct{}{}
 
-	pd.VCM = vcm
-	pd.colorPalette = palette
-	pd.buffer = bytes.NewBuffer([]byte{})
-	pd.img = image.NewRGBA(image.Rect(0, 0, int(dims[0]), int(dims[1])))
-
-	pd.VCM.AddRenderer(pd.renderImage)
-
-	pd.VCM.Model.SetTPS(tps)
-	pd.VCM.SetRPS(tps)
-
-	return pd
+	return &exp
 }
