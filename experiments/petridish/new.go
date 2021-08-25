@@ -9,7 +9,7 @@ import (
 
 type PetriDishOption func(*PetriDish) *PetriDish
 
-func NewFromSpaceAndDynamic(space calab.Space, dynamic calab.Evolvable, opts ...PetriDishOption) *PetriDish {
+func NewFromSpaceAndDynamic(space calab.Space, dynamic calab.Dynamic, opts ...PetriDishOption) *PetriDish {
 	return NewFromSystem(calab.BulkDynamicalSystem(space, dynamic), opts...)
 }
 
