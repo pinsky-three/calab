@@ -1,12 +1,18 @@
 package experiments
 
 import (
+	"fmt"
 	"image"
+	"image/png"
+	"os"
+	"os/exec"
+	"path"
 	"sync"
 	"time"
 
 	"github.com/minskylab/calab/experiments/petridish"
 	"github.com/minskylab/calab/experiments/utils"
+	"github.com/pkg/errors"
 )
 
 type ExperimentInterface struct {
@@ -99,7 +105,80 @@ func (exp *Experiment) Observe(dishID string) (chan image.Image, error) {
 	return channel, nil
 }
 
-func (exp *Experiment) Timelapse(dishID string) {
+type TimeLapseOptions struct {
+	OutputFilename string
+	Debug          bool
+}
+
+func (exp *Experiment) Timelapse(dishID string, done chan struct{}, opts *TimeLapseOptions) error {
+	ca := exp.dishes[dishID]
+
+	tempFolder := path.Join(os.TempDir(), "calab")
+	imagesPath := path.Join(tempFolder, ca.ID)
+
+	frames, err := exp.Observe(ca.ID)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err := os.MkdirAll(imagesPath, 0755); err != nil {
+		return errors.WithStack(err)
+	}
+
+	go func() {
+		for frame := range frames {
+			// fmt.Printf("frame: %d\n", gameOfLife.Ticks())
+
+			filename := fmt.Sprintf("frame-%d.png", ca.Ticks())
+			filepath := path.Join(imagesPath, filename)
+
+			go func(filepath string, image image.Image) {
+				f, err := os.OpenFile(filepath, os.O_CREATE|os.O_RDWR, 0644)
+				if err != nil {
+					panic(err)
+				}
+
+				png.Encode(f, image)
+				f.Close()
+			}(filepath, frame)
+		}
+	}()
+
+	<-done
+
+	outVideo := fmt.Sprintf("%s.mp4", ca.ID)
+	if opts != nil {
+		outVideo = opts.OutputFilename
+	}
+
+	// TODO: Add more function parameters to specify ffmpeg modifiers.
+
+	if err := exec.Command("ffmpeg",
+		"-framerate", "24",
+		"-i", path.Join(imagesPath, "frame-%d.png"),
+		"-c:v", "libx264",
+		"-pix_fmt", "yuv420p",
+		"-crf", "25",
+		"-preset", "slow",
+		"-tune", "animation",
+		"-f", "mp4",
+		"-y",
+		outVideo).Run(); err != nil {
+		return errors.WithStack(err)
+	}
+
+	if opts == nil || (opts != nil && opts.Debug) {
+		fmt.Printf("id: %s\n", ca.ID)
+		fmt.Printf("frames: %s\n", imagesPath)
+		fmt.Printf("video: %s\n", outVideo)
+		fmt.Printf("total ticks: %d\n", ca.Ticks())
+		fmt.Printf("mean tps: %.3f\n", ca.GetMeanTPS())
+	}
+
+	close(frames)
+	close(done)
+
+	return nil
 }
 
 /*
