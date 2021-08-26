@@ -29,7 +29,7 @@ func generateTimelapse(experiment *experiments.Experiment, r, s, t int) {
 		OutputFilename: fmt.Sprintf("results/cyclic-%d-%d-%d.mp4", r, s, t),
 	}
 
-	done := ca.RunTicks(800)
+	done := ca.RunTicks(100)
 	if err := experiment.Timelapse(ca.ID, done, timelapseOptions); err != nil {
 		panic(err)
 	}
@@ -38,8 +38,8 @@ func generateTimelapse(experiment *experiments.Experiment, r, s, t int) {
 func main() {
 	experiment := experiments.New()
 
+	radius := []int{1, 2}
 	stages := []int{3, 4, 6}
-	radius := []int{1, 2, 3}
 	thresholds := []int{2, 3, 4}
 
 	for _, s := range stages {
@@ -50,5 +50,5 @@ func main() {
 		}
 	}
 
-	generateTimelapse(experiment, 10, 2, 2)
+	// generateTimelapse(experiment, 10, 2, 2)
 }

@@ -7,9 +7,10 @@ import (
 )
 
 func NewTPSMonitor(pd *PetriDish) calab.Renderer {
-	// Probably I'll need to add a mutex strategy here
+	// TODO: Probably I'll need to add a mutex strategy here
 
 	lastTime := time.Now()
+
 	return func(n uint64, s calab.Space) {
 		dur := time.Since(lastTime)
 		pd.meanTPS = 1 / dur.Seconds()

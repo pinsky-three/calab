@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// Tick execute one tick dynamical system evolution.
+// Tick execute one dynamical tick system evolution.
 func (ds *DynamicalSystem) Tick() {
 	elapsedTime := time.Since(ds.lastTime)
 	expectedDuration := 1000 / time.Duration(ds.ticksPerSecond) * time.Millisecond

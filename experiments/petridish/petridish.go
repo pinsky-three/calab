@@ -16,8 +16,9 @@ const (
 // PetriDish is a representation of a virtual computation model.
 // It is a RGBA Image interpretation from an Space.
 type PetriDish struct {
-	ID             string
-	Model          *calab.VirtualComputationalModel
+	ID    string
+	Model *calab.VirtualComputationalModel
+
 	img            *image.RGBA
 	colorPalette   calab.Palette
 	ticks          uint64

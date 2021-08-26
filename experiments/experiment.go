@@ -15,16 +15,16 @@ import (
 	"github.com/pkg/errors"
 )
 
-type ExperimentInterface struct {
-	host string
-	port int64
-}
+// type ExperimentInterface struct {
+// 	host string
+// 	port int64
+// }
 
 type Experiment struct {
 	mu          sync.Locker
 	dishes      map[string]*petridish.PetriDish
 	dishesDones map[string]chan struct{}
-	control     ExperimentInterface
+	// control     ExperimentInterface
 }
 
 func (exp *Experiment) syncDoneDish(dishID string, done chan struct{}) {
@@ -72,12 +72,12 @@ func (exp *Experiment) Run(dishID string, opts *Options) {
 	exp.syncDoneDish(dishID, done)
 }
 
-func (exp *Experiment) Play(dishID string) {
-	exp.dishes[dishID].Run(24 * time.Hour)
-}
+// func (exp *Experiment) Play(dishID string) {
+// 	exp.dishes[dishID].Run(24 * time.Hour)
+// }
 
-func (exp *Experiment) Pause(dishID string) {
-}
+// func (exp *Experiment) Pause(dishID string) {
+// }
 
 func (exp *Experiment) Snapshot(dishID string) (string, uint64) {
 	filename := "snapshot_" + dishID + "_" + time.Now().Format("2006_01_02_15_04_05") + ".png"
@@ -108,6 +108,7 @@ func (exp *Experiment) Observe(dishID string) (chan image.Image, error) {
 type TimeLapseOptions struct {
 	OutputFilename string
 	Debug          bool
+	DeleteAfter    bool
 }
 
 func (exp *Experiment) Timelapse(dishID string, done chan struct{}, opts *TimeLapseOptions) error {
@@ -173,6 +174,12 @@ func (exp *Experiment) Timelapse(dishID string, done chan struct{}, opts *TimeLa
 		fmt.Printf("video: %s\n", outVideo)
 		fmt.Printf("total ticks: %d\n", ca.Ticks())
 		fmt.Printf("mean tps: %.3f\n", ca.GetMeanTPS())
+	}
+
+	if opts != nil && opts.DeleteAfter {
+		if err := os.RemoveAll(imagesPath); err != nil {
+			return errors.WithStack(err)
+		}
 	}
 
 	close(frames)
