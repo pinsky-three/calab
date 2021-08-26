@@ -22,20 +22,10 @@ func horizontalLine(w, h int) [][]int {
 	}
 }
 
-func interpolate(cloud ...[][]int) [][]int {
-	result := [][]int{}
-
-	for _, cl := range cloud {
-		result = append(result, cl...)
-	}
-
-	return result
-}
-
 func main() {
 	w, h := 2048, 2048
 
-	points := 32
+	points := 24
 
 	dynamic := voronoi.MustNew(points)
 
@@ -59,7 +49,7 @@ func main() {
 		DeleteAfter: false,
 	}
 
-	done := ca.RunTicks(1000)
+	done := ca.RunTicks(1200)
 	if err := experiment.Timelapse(ca.ID, done, timelapseOptions); err != nil {
 		panic(err)
 	}

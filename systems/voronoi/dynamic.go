@@ -89,9 +89,9 @@ func (v *Voronoi) Evolve(space calab.Space) calab.Space {
 			}
 			// }
 
-			// if len(neighborhoodCounts) > 2 {
-			// 	continue
-			// }
+			if len(neighborhoodCounts) > 2 {
+				continue
+			}
 
 			// if isUniqueSymbolComposition(encodeNeighborhood) {
 			// 	continue
