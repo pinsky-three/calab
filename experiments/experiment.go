@@ -148,7 +148,7 @@ func (exp *Experiment) Timelapse(dishID string, done chan struct{}, opts *TimeLa
 	<-done
 
 	outVideo := fmt.Sprintf("%s.mp4", ca.ID)
-	if opts != nil {
+	if opts != nil && opts.OutputFilename != "" {
 		outVideo = opts.OutputFilename
 	}
 

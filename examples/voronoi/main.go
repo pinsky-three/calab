@@ -1,14 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
-	"time"
 
 	"github.com/minskylab/calab"
 	"github.com/minskylab/calab/experiments"
 	"github.com/minskylab/calab/experiments/petridish"
-	"github.com/minskylab/calab/experiments/utils"
 	"github.com/minskylab/calab/spaces/board"
 	"github.com/minskylab/calab/systems/voronoi"
 )
@@ -36,10 +33,9 @@ func interpolate(cloud ...[][]int) [][]int {
 }
 
 func main() {
-	w, h := 1024, 1024
+	w, h := 2048, 2048
 
-	// dynamic := lifelike.MustNew(lifelike.GameOfLifeRule, lifelike.ToroidBounded, lifelike.MooreNeighborhood(1, false))
-	points := 4
+	points := 32
 
 	dynamic := voronoi.MustNew(points)
 
@@ -53,17 +49,18 @@ func main() {
 	space = space.Fill(board.FullState(0), dynamic)
 	space = space.Fill(board.SpecificPositions(initialState), dynamic)
 
-	ca := petridish.NewFromSystem(calab.BulkDynamicalSystem(space, dynamic))
+	ca := petridish.NewFromSystem(calab.BulkDynamicalSystem(space, dynamic), petridish.WithTPSMonitor)
 
 	experiment := experiments.New()
-
 	experiment.AddPetriDish(ca)
 
-	experiment.Run(ca.ID, experiments.WithTicks(5000))
+	timelapseOptions := &experiments.TimeLapseOptions{
+		Debug:       true,
+		DeleteAfter: false,
+	}
 
-	time.Sleep(200 * time.Second)
-
-	fmt.Printf("%s ends with %d ticks\n", ca.ID, ca.Ticks())
-
-	utils.SaveSnapshotAsPNG(ca, fmt.Sprintf("%s.png", ca.ID))
+	done := ca.RunTicks(1000)
+	if err := experiment.Timelapse(ca.ID, done, timelapseOptions); err != nil {
+		panic(err)
+	}
 }
