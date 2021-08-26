@@ -1,8 +1,9 @@
 package voronoi
 
 type Voronoi struct {
-	stateToIndex map[int]int
-	indexToState map[int]int
+	// stateToIndex map[int]uint64
+	// indexToState map[uint64]int
+	totalPoints int
 }
 
 func sieveOfEratosthenes(N int, expectedPrimes int) (primes []int) {
@@ -27,22 +28,25 @@ func sieveOfEratosthenes(N int, expectedPrimes int) (primes []int) {
 }
 
 func New(totalPoints int) (*Voronoi, error) {
-	primes := sieveOfEratosthenes(10_000, totalPoints)
+	// primes := sieveOfEratosthenes(10_000, totalPoints)
 
-	stateToIndex := map[int]int{}
-	indexToState := map[int]int{}
+	// stateToIndex := map[int]uint64{}
+	// indexToState := map[uint64]int{}
 
-	stateToIndex[0] = 0
-	indexToState[0] = 0
+	// stateToIndex[0] = 0
+	// indexToState[0] = 0
 
-	for i, p := range primes {
-		stateToIndex[p] = i + 1
-		indexToState[i+1] = p
-	}
+	// for i, p := range primes {
+	// 	ind := uint64(i + 1)
+
+	// 	stateToIndex[p] = ind
+	// 	indexToState[ind] = p
+	// }
 
 	return &Voronoi{
-		stateToIndex: stateToIndex,
-		indexToState: indexToState,
+		// stateToIndex: stateToIndex,
+		// indexToState: indexToState,
+		totalPoints: totalPoints,
 	}, nil
 }
 

@@ -26,6 +26,7 @@ func generateTimelapse(experiment *experiments.Experiment, r, s, t int) {
 
 	timelapseOptions := &experiments.TimeLapseOptions{
 		Debug:          true,
+		DeleteAfter:    true,
 		OutputFilename: fmt.Sprintf("results/cyclic-%d-%d-%d.mp4", r, s, t),
 	}
 
