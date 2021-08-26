@@ -1,23 +1,19 @@
 package cyclic
 
 // NewRockPaperScissor returns a new Rock Paper Scissor.
-func NewRockPaperScissor(states, threshold int, stochastic int) (*RockPaperScissor, error) {
-	countsMap := map[uint64]int{}
-
-	for i := 0; i < states; i++ {
-		countsMap[uint64(i)] = 0
-	}
-
+func NewRockPaperScissor(bounder Bounder2D, neighborhood Neighborhood, totalStates, threshold int, stochastic int) (*RockPaperScissor, error) {
 	return &RockPaperScissor{
-		countsMap:  countsMap,
-		threshold:  threshold,
-		stochastic: stochastic,
+		totalStates:  uint64(totalStates),
+		threshold:    threshold,
+		stochastic:   stochastic,
+		bounder:      bounder,
+		neighborhood: neighborhood,
 	}, nil
 }
 
 // MustNewRockPaperScissor fails with panic occurs.
-func MustNewRockPaperScissor(states, threshold int, stochastic int) *RockPaperScissor {
-	ca, err := NewRockPaperScissor(states, threshold, stochastic)
+func MustNewRockPaperScissor(bounder Bounder2D, neighborhood Neighborhood, totalStates, threshold, stochastic int) *RockPaperScissor {
+	ca, err := NewRockPaperScissor(bounder, neighborhood, totalStates, threshold, stochastic)
 	if err != nil {
 		panic(err)
 	}
