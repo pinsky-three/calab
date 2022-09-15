@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 
+	"github.com/lucasb-eyer/go-colorful"
 	"github.com/minskylab/calab"
 	"github.com/minskylab/calab/experiments"
 	"github.com/minskylab/calab/experiments/petridish"
@@ -23,9 +25,9 @@ func horizontalLine(w, h int) [][]int {
 }
 
 func main() {
-	w, h := 2048, 2048
+	w, h := 512, 512
 
-	points := 24
+	points := 32
 
 	dynamic := voronoi.MustNew(points)
 
@@ -33,6 +35,7 @@ func main() {
 
 	for i := 1; i < points+1; i++ {
 		initialState[uint64(i)] = horizontalLine(rand.Intn(w-3)+3, rand.Intn(h-3)+3)
+		fmt.Println(initialState[uint64(i)][3])
 	}
 
 	space := board.MustNew(w, h)
@@ -41,16 +44,16 @@ func main() {
 
 	ca := petridish.NewFromSystem(calab.BulkDynamicalSystem(space, dynamic), petridish.WithTPSMonitor)
 
+	ca.SetGradientWithVoidPalette(colorful.HappyColor(), colorful.FastHappyColor())
+
 	experiment := experiments.New()
 	experiment.AddPetriDish(ca)
 
-	timelapseOptions := &experiments.TimeLapseOptions{
+	done := ca.RunTicks(800)
+	if err := experiment.Timelapse(ca.ID, done, &experiments.TimeLapseOptions{
 		Debug:       true,
 		DeleteAfter: false,
-	}
-
-	done := ca.RunTicks(1200)
-	if err := experiment.Timelapse(ca.ID, done, timelapseOptions); err != nil {
+	}); err != nil {
 		panic(err)
 	}
 }

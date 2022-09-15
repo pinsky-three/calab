@@ -9,8 +9,8 @@ import (
 // Palette is a state to color mapping, also know as pallette.
 type Palette map[uint64]color.Color
 
-// NewPalette creates a new pallette
-func NewPalette(colorStart colorful.Color, colorEnd colorful.Color, intervals int) Palette {
+// GradientPalette creates a new pallette
+func GradientPalette(colorStart colorful.Color, colorEnd colorful.Color, intervals int) Palette {
 	palette := Palette{}
 
 	for i := 0; i < intervals; i++ {
@@ -20,8 +20,8 @@ func NewPalette(colorStart colorful.Color, colorEnd colorful.Color, intervals in
 	return palette
 }
 
-// NewCyclicPalette returns a cyclic palette.
-func NewCyclicPalette(c1 colorful.Color, c2 colorful.Color, intervals int) Palette {
+// CyclicPalette returns a cyclic palette.
+func CyclicPalette(c1 colorful.Color, c2 colorful.Color, intervals int) Palette {
 	palette := Palette{}
 
 	for i := 0; i < intervals/2; i++ {
